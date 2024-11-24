@@ -16,6 +16,8 @@ interface TokenBalance {
  * @returns Array of token balances with metadata
  */
 export async function getTokenBalances(address: string, chain: string): Promise<TokenBalance[]> {
+
+  console.log('Running getTokenBalances tool with address:', address, 'and chain:', chain);
   try {
     const response = await fetch(
       `https://${chain}.blockscout.com/api/v2/addresses/${address}/tokens`,

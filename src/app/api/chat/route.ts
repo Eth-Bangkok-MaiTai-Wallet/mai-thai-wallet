@@ -15,6 +15,30 @@ export async function POST(req: Request) {
     }
   });
 
+  if (messages[0].experimental_attachments) {
+    const attachmentResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/attachment/image`, {
+      method: 'POST',
+      body: JSON.stringify({ messages }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (attachmentResponse.ok) {
+      const attachmentResult = await attachmentResponse.json();
+      console.log('Attachment response:', JSON.stringify(attachmentResult));
+
+      // Remove experimental_attachments and add system message with result
+      // delete messages[0].experimental_attachments;
+      messages.push({
+        role: 'system',
+        content: JSON.stringify(attachmentResult)
+      });
+    }
+  }
+
+  console.log('After attachment:', JSON.stringify(messages));
+
   if (classifyResponse.ok && classifyResponse.status !== 204) {
     const classification = await classifyResponse.json();
     console.log(JSON.stringify(classification));
