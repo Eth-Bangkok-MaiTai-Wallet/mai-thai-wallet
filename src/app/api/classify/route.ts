@@ -12,14 +12,14 @@ const classifier = new EmbeddingSimilarityClassifier({
 export async function POST(req: Request) {
     const { messages } = await req.json();
 
-    console.log(messages);
+    console.log("Messages: ", messages);
   
     const result = await classify({
         model: classifier,
         value: messages[messages.length - 1].content,
     });
 
-    console.log(result);
+    console.log("Result: ", result);
 
     return new Response(JSON.stringify(result), { 
       status: result ? 200 : 204,
