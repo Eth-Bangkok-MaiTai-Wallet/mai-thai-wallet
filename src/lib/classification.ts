@@ -6,6 +6,7 @@ export const clusters = [
         "How much eth do I have?",
         "What is my DAI balance?",
         "Tell me my balanc of WETH on mainnet",
+        "Tell me the balance of USDC of the attached address",
       ],
     },
     {

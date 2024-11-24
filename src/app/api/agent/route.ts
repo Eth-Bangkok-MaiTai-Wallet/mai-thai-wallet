@@ -1,3 +1,4 @@
+import { decodeQR } from '@/lib/tools/qrDecoder';
 import { getTokenBalances } from '@/lib/tools/tokenBalance';
 import { openai } from '@ai-sdk/openai';
 import { generateText, tool } from 'ai';
@@ -17,14 +18,11 @@ export async function POST(req: Request) {
             parameters: z.object({ address: z.string(), chain: z.string() }),
             execute: async ({ address, chain = 'eth' }) => getTokenBalances(address, chain),
           }),
-          // calculate: tool({
-          //   description:
-          //     'A tool for evaluating mathematical expressions. Example expressions: ' +
-          //     "'1.2 * (2 + 4.5)', '12.7 cm to inch', 'sin(45 deg) ^ 2'.",
-          //   parameters: z.object({ expression: z.string() }),
-          //   execute: async ({ expression }) => mathjs.evaluate(expression),
-          // }),
-          // answer tool: the LLM will provide a structured answer
+          qrDecoder: tool({
+            description: 'A tool for decoding QR codes. Takes a base64 encoded image as input and returns the decoded text.',
+            parameters: z.object({ base64Image: z.string() }),
+            execute: async ({ base64Image }) => decodeQR(base64Image),
+          }),
           answer: tool({
             description: 'A tool for providing the final answer.',
             parameters: z.object({
@@ -36,7 +34,6 @@ export async function POST(req: Request) {
               ),
               answer: z.string(),
             }),
-            // no execute function - invoking it will terminate the agent
           }),
         },
         toolChoice: 'required',
@@ -45,6 +42,7 @@ export async function POST(req: Request) {
           'You are checking token balances for an Ethereum address. ' +
           'Reason step by step. ' +
           'Use the tokenBalance tool when necessary. ' +
+          'Use the qrDecoder tool when base64 encoded images are provided. ' +
           'When you give the final answer, provide an explanation for how you got it.',
         prompt:
           JSON.stringify(messages),
