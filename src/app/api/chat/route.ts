@@ -44,7 +44,7 @@ export async function POST(req: Request) {
     }
   }
 
-  console.log(JSON.stringify(messages));
+  console.log("Messages after classification: ")
 
   const prompt = 'You are a talking ethereum smart wallet. You receive the user input and the AI agent response with a solution to the inquiry. Formulate the final response to the user.';
 
