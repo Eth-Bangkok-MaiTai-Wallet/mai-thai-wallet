@@ -13,6 +13,8 @@ type CoreUserMessageWithAttachments = CoreUserMessage & {
 export const maxDuration = 30;
 
 const MODEL = registry.languageModel('akash:Meta-Llama-3-1-8B-Instruct-FP8');
+const FINAL_PROMPT = 'You receive the user input and the AI agent response with a solution to the inquiry. Formulate the final response to the user based on the answer provided by the agent. Respond with the final answer only.';
+
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
@@ -63,11 +65,9 @@ export async function POST(req: Request) {
   });
     
 
-  const prompt = 'You receive the user input and the AI agent response with a solution to the inquiry. Formulate the final response to the user based on the answer provided by the agent. Respond with the final answer only.';
-
   messages.unshift({
     role: 'system',
-    content: prompt
+    content: FINAL_PROMPT
   });
 
   console.debug('Messages after agent call: ', JSON.stringify(messages));
