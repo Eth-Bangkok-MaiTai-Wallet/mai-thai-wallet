@@ -1,4 +1,5 @@
-import { openai } from '@ai-sdk/openai';
+import { registry } from '@/lib/providerRegistry';
+// import { openai } from '@ai-sdk/openai';
 import { streamText } from 'ai';
 
 // Allow streaming responses up to 30 seconds
@@ -104,7 +105,8 @@ export async function POST(req: Request) {
 
 
   const result = streamText({
-    model: openai('gpt-4-turbo'),
+    // model: openai('gpt-4-turbo'),
+    model: registry.languageModel('akash:Meta-Llama-3-1-8B-Instruct-FP8'),
     messages
   });
 
