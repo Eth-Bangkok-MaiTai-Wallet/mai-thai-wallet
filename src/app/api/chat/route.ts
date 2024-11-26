@@ -41,7 +41,7 @@ export async function POST(req: Request) {
 
   if (classifyResponse.ok && classifyResponse.status !== 204) {
     const classification = await classifyResponse.json();
-    console.log(JSON.stringify(classification));
+    console.log("Classification result: ", JSON.stringify(classification));
     
     messages.push({
       role: 'system',
@@ -66,9 +66,20 @@ export async function POST(req: Request) {
       });
       
     }
+
+    //This agent call stores blockchain transaction object in the key store database
+    const objectResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/transaction`, {
+      method: 'POST',
+      body: JSON.stringify({ messages }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    console.log("----Object response----: ", await objectResponse.json());
   }
 
-  console.log("Messages after classification: ")
+  console.log("Messages after classification: ", messages)
 
   const prompt = 'You are a talking ethereum smart wallet. You receive the user input and the AI agent response with a solution to the inquiry. Formulate the final response to the user.';
 
@@ -78,6 +89,19 @@ export async function POST(req: Request) {
   });
 
   console.log(JSON.stringify(messages));
+
+  // let schema = ''
+  // if ( transactionType == 'eth_transfer_to_ens' || 'eth_transfer_to_address'){
+  //   schema = z.object({
+  //     to: z.string().describe("receiver address"),
+  //     value: z.string().describe("amount to transfer")
+  //   })
+  // } else if (transactionType == 'erc20_transfer_to_ens' || transactionType == 'erc20_transfer_to_address'){
+  //     to: z.string().describe("address of the contract to interact with"),
+  //     data: z.string().describe("data should be empty string"),
+  //     value: z.string().describe("amount to transfer")
+  // }
+
 
   const result = streamText({
     model: openai('gpt-4-turbo'),

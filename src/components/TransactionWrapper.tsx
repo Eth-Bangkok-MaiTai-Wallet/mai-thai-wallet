@@ -12,30 +12,31 @@ import type {
 } from '@coinbase/onchainkit/transaction';
 import { Address, ContractFunctionParameters, encodeFunctionData, parseEther } from 'viem';
 
-export default function TransactionWrapper({ onStatus, chainId, address, abi, functionName, args, value }: { onStatus: any, chainId: number, address: Address, abi: any, functionName: string, args: any, value?: bigint }) {
-  
-  const contracts = [
-    {
-      address: address,
-      abi: abi,
-      functionName: functionName,
-      args: args,
-    },
-  ] as unknown as ContractFunctionParameters[];
+export default function TransactionWrapper({ onStatus, transactionObject, chainId, disabled, value }: { onStatus: any, transactionObject: any, chainId: number, disabled: boolean, value?: bigint }) {
 
-  const encodedStoreData = encodeFunctionData({
-    abi: abi,
-    functionName: functionName,
-    args: [6]
-  });
+  //read transaction object from vercel KV database
 
-  address = "0x38F4152654AaBFA65f0de2296327927FBBA8a381";
+  // const contracts = [
+  //   {
+  //     address: address,
+  //     abi: abi,
+  //     functionName: functionName,
+  //     args: args,
+  //   },
+  // ] as unknown as ContractFunctionParameters[];
 
+  // const encodedStoreData = encodeFunctionData({
+  //   abi: abi,
+  //   functionName: functionName,
+  //   args: [6]
+  // });
+
+  // const address: any = `0x38F4152654AaBFA65f0de2296327927FBBA8a381`;
   const calls = [
     {
-      to: address,
+      to: transactionObject?.to,
       // data: "0x",//encodedStoreData,
-      // value: parseEther("0.0001")
+      value: transactionObject ? parseEther(transactionObject.amount) : "0"
     },
   ];
 

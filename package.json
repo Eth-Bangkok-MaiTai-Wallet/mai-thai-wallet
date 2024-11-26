@@ -13,6 +13,7 @@
     "@ai-sdk/openai": "^1.0.4",
     "@coinbase/onchainkit": "^0.35.6",
     "@rainbow-me/rainbowkit": "^2.2.0",
+    "@vercel/kv": "^3.0.0",
     "ai": "^4.0.3",
     "dotenv": "^16.4.5",
     "encoding": "^0.1.13",
