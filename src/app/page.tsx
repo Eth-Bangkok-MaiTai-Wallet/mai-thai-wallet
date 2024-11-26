@@ -1,18 +1,44 @@
 'use client';
 
+import dotenv from 'dotenv';
+dotenv.config();
+
 import { useChat } from 'ai/react';
 import LoginButton from '../components/LoginButton';
 import SignupButton from '../components/SignupButton';
 import { useAccount } from 'wagmi';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import { TransactionButton } from '@coinbase/onchainkit/transaction';
+import TransactionWrapper from '@/components/TransactionWrapper';
+import { BASE_CHAIN_ID } from '@/constants';
 
 export default function Chat() {
   const { address } = useAccount();
   const { messages, input, handleInputChange, handleSubmit } = useChat();
+  const [transactionObject, setTransactionObject] = useState<any>();
 
   const [files, setFiles] = useState<FileList | undefined>(undefined);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const fetchTransaction = async () => {
+      try {
+        const response = await fetch('/api/retrieve_transaction');
+        const data = await response.json();
+        console.log("Stored transaction: ", data.transaction);
+        setTransactionObject(data.transaction);
+      } catch (error) {
+        console.error("Error fetching transaction:", error);
+      }
+    };
+
+    fetchTransaction();
+  }, [messages]);
+
+  useEffect(() => {
+    console.log("TransactionObject in state: ", transactionObject)
+  }, [transactionObject])
 
   return (
     <div className="flex h-full w-96 max-w-full flex-col px-1 md:w-[1008px]">
@@ -92,6 +118,14 @@ export default function Chat() {
               onChange={handleInputChange}
             />
           </form>
+        </div>
+        <div>
+          <TransactionWrapper
+            onStatus={()=> {}}
+            transactionObject={transactionObject} 
+            chainId={BASE_CHAIN_ID} 
+            disabled={false}
+          />
         </div>
       </section>
     </div>

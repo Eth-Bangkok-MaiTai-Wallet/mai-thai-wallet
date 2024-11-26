@@ -19,7 +19,7 @@ export async function POST(req: Request) {
         value: messages[messages.length - 1].content,
     });
 
-    console.log("Result: ", result);
+    console.log("Result of classification: ", result);
 
     return new Response(JSON.stringify(result), { 
       status: result ? 200 : 204,
