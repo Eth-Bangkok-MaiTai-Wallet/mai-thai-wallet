@@ -1,18 +1,18 @@
-import { parseEther } from 'viem';
+// import { parseEther } from 'viem';
 import { kv } from "@vercel/kv";
 
-// interface TransferObject {
-//     to: string,
-//     data: string,
-//     amount: BigInt
-// }
+interface TransactionObject {
+    to: string,
+    data: string,
+    amount: string
+}
   
 /**
  * Fetches token balances for an Ethereum address from Blockscout API
  * @param address The Ethereum address to look up
  * @returns Array of token balances with metadata
 */
-export async function getEthTransferObject(address: string, amount: string): Promise<any> {
+export async function getEthTransferObject(address: string, amount: string): Promise<TransactionObject> {
     console.log('Running getEthTransferObject tool with address:', address, 'and amount:', amount);
     try {
       const transferObject = {
@@ -24,7 +24,7 @@ export async function getEthTransferObject(address: string, amount: string): Pro
       //save transferObject to vercel KV database
       await kv.set("transaction", JSON.stringify(transferObject));
 
-      let storedTransaction: any = await kv.get<{ id: string; quantity: number }[]>("transaction");
+      const storedTransaction: TransactionObject | null = await kv.get<TransactionObject>("transaction");
       console.log("Stored transaction: ", storedTransaction);
       return transferObject
   
