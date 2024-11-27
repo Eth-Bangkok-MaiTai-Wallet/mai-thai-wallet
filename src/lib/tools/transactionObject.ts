@@ -2,6 +2,7 @@
 import { usdc_base_abi } from "@/constants";
 import { kv } from "@vercel/kv";
 import { encodeFunctionData, parseUnits } from 'viem'; // Add viem import
+import { lookupENS } from "./ensLookup";
 
 interface TransactionObject {
     to: string,
@@ -80,7 +81,8 @@ export async function getErc20TransferObject(token: string, receiver: string, am
     console.log("MMM")
 
     if (!/^0x[a-fA-F0-9]{40}$/.test(receiver)) {
-      receiver = ensLookup(receiver)
+      const receiver_address = await lookupENS(receiver)
+      receiver = receiver_address ? receiver_address : ""
     }
 
     const decimals = tokenDecimals[token];
