@@ -20,6 +20,8 @@ const FINAL_PROMPT = 'You receive the user input and the AI agent response with 
 export async function POST(req: Request) {
   const { messages: textMessages } = await req.json();
 
+  console.log("----Chat Route----:", JSON.stringify(textMessages));
+
   // const voiceIntents: any = await retrieveVoiceIntents()
   // const messages = [...textMessages, ...voiceIntents]
   const messages = [...textMessages]

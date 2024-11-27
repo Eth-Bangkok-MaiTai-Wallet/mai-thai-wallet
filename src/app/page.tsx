@@ -20,6 +20,7 @@ export default function Chat() {
 
   const [files, setFiles] = useState<FileList | undefined>(undefined);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
 
   useEffect(() => {
     const fetchTransaction = async () => {
@@ -65,8 +66,8 @@ export default function Chat() {
 
             return (
               <div key={m.id} className="whitespace-pre-wrap">
-                {m.role === 'user' ? 'User: ' : 'AI: '}
-                {m.content}
+                {m.role !== 'system' && (m.role === 'user' ? 'User: ' : 'AI: ')}
+                {m.role !== 'system' ? m.content : ''}
                 <div>
                   {m?.experimental_attachments
                     ?.filter(attachment =>
@@ -89,6 +90,11 @@ export default function Chat() {
           <form
             className="fixed bottom-0 w-full max-w-md p-2 mb-8 border border-gray-300 rounded shadow-xl space-y-2"
             onSubmit={event => {
+              messages.push({
+                role: 'system',
+                content: JSON.stringify({ userAddress: address, chainId: BASE_CHAIN_ID }),
+                id: 'user-address',
+              });
               handleSubmit(event, {
                 experimental_attachments: files,
               });
