@@ -44,17 +44,17 @@ export async function POST(req: Request) {
   console.debug("Classification result: ", JSON.stringify(classificationResult));
 
   // Extract ethereum addresses from images if present
-  const attachmentResult = await extractAddressFromImage(messages);
+  // const attachmentResult = await extractAddressFromImage(messages);
 
-  if (attachmentResult) {
-    console.debug('Attachment response:', JSON.stringify(attachmentResult));
-    // Remove attachments from messages
-    delete (messages[0] as CoreUserMessageWithAttachments).experimental_attachments;
-    messages.push({
-      role: 'system',
-      content: JSON.stringify(attachmentResult)
-    });
-  }
+  // if (attachmentResult) {
+  //   console.debug('Attachment response:', JSON.stringify(attachmentResult));
+  //   // Remove attachments from messages
+  //   delete (messages[0] as CoreUserMessageWithAttachments).experimental_attachments;
+  //   messages.push({
+  //     role: 'system',
+  //     content: JSON.stringify(attachmentResult)
+  //   });
+  // }
 
   // Add classification result to messages after attachment result
   messages.push({
@@ -114,7 +114,7 @@ const agentRouter = async (messages: CoreMessage[], classificationResult: string
     case 'eth_transfer_to_address':
       return callAgent(messages, 'transfer');
     case 'eth_transfer_to_ens':
-      return notImplemented;
+      return callAgent(messages, 'transfer');
     case 'erc20_transfer_to_address':
       return callAgent(messages, 'transfer');
     case 'erc20_transfer_to_ens':
