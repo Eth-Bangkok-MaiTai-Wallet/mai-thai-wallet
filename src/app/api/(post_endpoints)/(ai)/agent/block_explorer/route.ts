@@ -1,4 +1,3 @@
-import { decodeQR } from '@/lib/tools/qrDecoder';
 import { getTokenBalances } from '@/lib/tools/tokenBalance';
 import { openai } from '@ai-sdk/openai';
 import { generateText, tool } from 'ai';
@@ -17,11 +16,6 @@ export async function POST(req: Request) {
             description: 'A tool for fetching token balances for an Ethereum address. Expects a valid ethereum address as input along with the chain name (e.g. eth, base, sepolia, etc.)',
             parameters: z.object({ address: z.string(), chain: z.string() }),
             execute: async ({ address, chain = 'eth' }) => getTokenBalances(address, chain),
-          }),
-          qrDecoder: tool({
-            description: 'A tool for decoding QR codes. Takes a base64 encoded image as input and returns the decoded text.',
-            parameters: z.object({ base64Image: z.string() }),
-            execute: async ({ base64Image }) => decodeQR(base64Image),
           }),
           answer: tool({
             description: 'A tool for providing the final answer.',
