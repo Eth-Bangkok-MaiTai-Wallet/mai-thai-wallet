@@ -1,4 +1,5 @@
 'use client';
+import { usdc_base_abi } from '@/constants';
 import {
   Transaction,
   TransactionButton,
@@ -10,7 +11,7 @@ import type {
   TransactionError,
   TransactionResponse,
 } from '@coinbase/onchainkit/transaction';
-import { Address, ContractFunctionParameters, encodeFunctionData, parseEther } from 'viem';
+import { Address, ContractFunctionParameters, encodeFunctionData, parseEther, parseUnits } from 'viem';
 
 export default function TransactionWrapper({ onStatus, transactionObject, chainId, disabled, value }: { onStatus: any, transactionObject: any, chainId: number, disabled: boolean, value?: bigint }) {
 
@@ -25,20 +26,31 @@ export default function TransactionWrapper({ onStatus, transactionObject, chainI
   //   },
   // ] as unknown as ContractFunctionParameters[];
 
-  // const encodedStoreData = encodeFunctionData({
-  //   abi: abi,
-  //   functionName: functionName,
-  //   args: [6]
-  // });
+  const receiver = '0x38F4152654AaBFA65f0de2296327927FBBA8a381'
+  const amount = parseUnits("0.0001", 6)
+  const encodedErc20Data = encodeFunctionData({
+    abi: usdc_base_abi,
+    functionName: 'transfer',
+    args: [receiver, amount]
+  });
 
   // const address: any = `0x38F4152654AaBFA65f0de2296327927FBBA8a381`;
   const calls = [
     {
       to: transactionObject?.to,
-      // data: "0x",//encodedStoreData,
-      value: transactionObject ? parseEther(transactionObject.amount) : "0"
+      data: transactionObject?.data,
+      value: transactionObject?.value
     },
   ];
+
+  // const to = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'
+  // const calls = [
+  //   {
+  //     to: to,
+  //     data: encodedErc20Data,
+  //     value: ""
+  //   },
+  // ];
 
   const handleError = (err: TransactionError) => {
     console.log(err)

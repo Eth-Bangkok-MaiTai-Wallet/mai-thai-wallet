@@ -1,8 +1,7 @@
 import { getTokenBalances } from '@/lib/tools/tokenBalance';
 import { openai } from '@ai-sdk/openai';
 import { generateText, tool } from 'ai';
-import {getEthTransferObject} from '@/lib/tools/transactionObject';
-// import 'dotenv/config';
+import {getErc20TransferObject, getEthTransferObject} from '@/lib/tools/transactionObject';
 import { z } from 'zod';
 
 export async function POST(req: Request) {
@@ -22,7 +21,16 @@ export async function POST(req: Request) {
 				description: 'A tool for creating blockchain transaction object for eth_transfer classification type. Use this tool when classification result is eth_transfer_to_address or eth_transfer_to_ens.',
 				parameters: z.object({address: z.string(), amount: z.string()}),
 				execute: async ({address, amount}) => getEthTransferObject(address, amount)
-			})
+			}),
+            erc20Transfer: tool({
+				description: 'A tool for creating blockchain transaction object for erc20_transfer classification type. Use this tool when classification result is erc20_transfer_to_address or erc20_transfer_to_ens.',
+				parameters: z.object({
+                    token: z.string().describe("symbol or address of the token to interact with"),
+                    receiver: z.string().describe("address of the receiver"),
+                    amount: z.string().describe("amount of token to transfer")
+                }),
+				execute: async ({token, receiver, amount}) => getErc20TransferObject(token, receiver, amount)
+			}),
 		},
         maxSteps: 5,
 		toolChoice: 'required',
@@ -32,10 +40,6 @@ export async function POST(req: Request) {
           	'result should be proposed transaction object',
         prompt:
           JSON.stringify(messages),
-        // schema: z.object({
-        //     address: z.string(),
-        //     amount: z.string()
-        // })
     });
       
     console.log(`FINAL TOOL CALLS: ${JSON.stringify(toolCalls, null, 2)}`);

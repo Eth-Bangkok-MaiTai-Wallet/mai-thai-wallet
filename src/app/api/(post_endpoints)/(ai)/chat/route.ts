@@ -20,8 +20,9 @@ const FINAL_PROMPT = 'You receive the user input and the AI agent response with 
 export async function POST(req: Request) {
   const { messages: textMessages } = await req.json();
 
-  const voiceIntents: any = await retrieveVoiceIntents()
-  const messages = [...textMessages, ...voiceIntents]
+  // const voiceIntents: any = await retrieveVoiceIntents()
+  // const messages = [...textMessages, ...voiceIntents]
+  const messages = [...textMessages]
 
   console.debug('Messages: ', JSON.stringify(messages));
 
@@ -115,7 +116,7 @@ const agentRouter = async (messages: CoreMessage[], classificationResult: string
     case 'eth_transfer_to_ens':
       return notImplemented;
     case 'erc20_transfer_to_address':
-      return notImplemented;
+      return callAgent(messages, 'transfer');
     case 'erc20_transfer_to_ens':
       return notImplemented;
     case 'erc20_swap':
