@@ -1,4 +1,5 @@
 import { registry } from '@/lib/providerRegistry';
+import { extractJSONFromStream } from '@/lib/tools/utils';
 // import { openai } from '@ai-sdk/openai';
 import { CoreMessage, CoreUserMessage, streamText } from 'ai';
 
@@ -17,7 +18,10 @@ const FINAL_PROMPT = 'You receive the user input and the AI agent response with 
 
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  const { messages: textMessages } = await req.json();
+
+  const voiceIntents: any = await retrieveVoiceIntents()
+  const messages = [...textMessages, ...voiceIntents]
 
   console.debug('Messages: ', JSON.stringify(messages));
 
@@ -107,7 +111,7 @@ const agentRouter = async (messages: CoreMessage[], classificationResult: string
     case 'balance_inquiry':
       return callAgent(messages, 'block_explorer');
     case 'eth_transfer_to_address':
-      return notImplemented;
+      return callAgent(messages, 'transfer');
     case 'eth_transfer_to_ens':
       return notImplemented;
     case 'erc20_transfer_to_address':
@@ -157,4 +161,19 @@ const extractAddressFromImage = async (messages: CoreMessage[]): Promise<CoreMes
   }
 
   return null;
-};  
+};
+
+const retrieveVoiceIntents = async (): Promise<CoreMessage[] | null> => {
+  
+  let voiceIntents: any = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/transcript`, {
+    method: 'GET'
+  })
+  
+  if (voiceIntents.ok) {
+    voiceIntents = await extractJSONFromStream(voiceIntents.body);
+    console.debug('Voice intents: ', JSON.stringify(voiceIntents));
+    return voiceIntents;
+  }
+  
+  return null;
+}
