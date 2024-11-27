@@ -1,14 +1,14 @@
 import { registry } from '@/lib/providerRegistry';
 import { extractJSONFromStream } from '@/lib/tools/utils';
 // import { openai } from '@ai-sdk/openai';
-import { CoreMessage, CoreUserMessage, streamText } from 'ai';
+import { CoreMessage, streamText } from 'ai';
 
-type CoreUserMessageWithAttachments = CoreUserMessage & {
-  experimental_attachments?: Array<{
-    type: string;
-    image_url: string;
-  }>;
-};
+// type CoreUserMessageWithAttachments = CoreUserMessage & {
+//   experimental_attachments?: Array<{
+//     type: string;
+//     image_url: string;
+//   }>;
+// };
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -106,7 +106,7 @@ const callAgent = async (messages: CoreMessage[], route: string) => {
 
 const agentRouter = async (messages: CoreMessage[], classificationResult: string) => {
 
-  const notImplemented = {answer: 'Not implemented yet.'};
+  // const notImplemented = {answer: 'Not implemented yet.'};
   
   switch (classificationResult) {
     case 'balance_inquiry':
@@ -118,9 +118,9 @@ const agentRouter = async (messages: CoreMessage[], classificationResult: string
     case 'erc20_transfer_to_address':
       return callAgent(messages, 'transfer');
     case 'erc20_transfer_to_ens':
-      return notImplemented;
+      return callAgent(messages, 'transfer');
     case 'erc20_swap':
-      return notImplemented;
+      return callAgent(messages, 'swap');
     default:
       return {answer: 'I am sorry, I do not understand your request. Please provide clarification.'};
   }

@@ -12,25 +12,25 @@ export async function POST(req: Request) {
     const { toolCalls } = await generateText({
         model: openai('gpt-4o-2024-08-06', { structuredOutputs: true }),
         tools: {
-			ethTransfer: tool({
-				description: 'A tool for creating blockchain transaction object for eth_transfer classification type. Use this tool when classification result is eth_transfer_to_address or eth_transfer_to_ens.',
-				parameters: z.object({address: z.string(), amount: z.string()}),
-				execute: async ({address, amount}) => getEthTransferObject(address, amount)
-			}),
-            erc20Transfer: tool({
-				description: 'A tool for creating blockchain transaction object for erc20_transfer classification type. Use this tool when classification result is erc20_transfer_to_address or erc20_transfer_to_ens.',
-				parameters: z.object({
-                    token: z.string().describe("symbol or address of the token to interact with"),
-                    receiver: z.string().describe("address of the receiver"),
-                    amount: z.string().describe("amount of token to transfer")
-                }),
-				execute: async ({token, receiver, amount}) => getErc20TransferObject(token, receiver, amount)
-			}),
-			ensLookup: tool({
-				description: 'A tool for resolving ens names to ethereum addresses. Expects a valid ens name as input. Returns null if the ens name is not found and an address otherwise. Use this tool when classification result is eth_transfer_to_ens.',
-				parameters: z.object({ens: z.string()}),
-				execute: async ({ens}) => lookupENS(ens)
-			}),
+            ethTransfer: tool({
+              description: 'A tool for creating blockchain transaction object for eth_transfer classification type. Use this tool when classification result is eth_transfer_to_address or eth_transfer_to_ens.',
+              parameters: z.object({address: z.string(), amount: z.string()}),
+              execute: async ({address, amount}) => getEthTransferObject(address, amount)
+            }),
+                  erc20Transfer: tool({
+              description: 'A tool for creating blockchain transaction object for erc20_transfer classification type. Use this tool when classification result is erc20_transfer_to_address or erc20_transfer_to_ens.',
+              parameters: z.object({
+                          token: z.string().describe("symbol or address of the token to interact with"),
+                          receiver: z.string().describe("address of the receiver"),
+                          amount: z.string().describe("amount of token to transfer")
+                      }),
+              execute: async ({token, receiver, amount}) => getErc20TransferObject(token, receiver, amount)
+            }),
+            ensLookup: tool({
+              description: 'A tool for resolving ens names to ethereum addresses. Expects a valid ens name as input. Returns null if the ens name is not found and an address otherwise. Use this tool when classification result is eth_transfer_to_ens.',
+              parameters: z.object({ens: z.string()}),
+              execute: async ({ens}) => lookupENS(ens)
+            }),
             answer: tool({
                 description: 'A tool for providing the final answer.',
                 parameters: z.object({
