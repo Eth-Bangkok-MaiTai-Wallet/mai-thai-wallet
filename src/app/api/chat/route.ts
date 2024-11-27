@@ -1,11 +1,21 @@
 import { openai } from '@ai-sdk/openai';
 import { streamText } from 'ai';
-
+import { extractJSONFromStream } from '@/lib/tools/utils';
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  let { messages } = await req.json();
+
+  let voiceIntents: any = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/transcript`, {
+    method: 'GET'
+  })
+  voiceIntents = await extractJSONFromStream(voiceIntents.body)
+  
+  messages = [...messages, ...voiceIntents]
+
+  console.log("---> Messages: ", messages)
+
 
   const classifyResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/classify`, {
     method: 'POST',
@@ -14,6 +24,8 @@ export async function POST(req: Request) {
       'Content-Type': 'application/json'
     }
   });
+
+  console.log("Classify response: ", classifyResponse)
 
   if (messages[0].experimental_attachments) {
     const attachmentResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/attachment/image`, {
