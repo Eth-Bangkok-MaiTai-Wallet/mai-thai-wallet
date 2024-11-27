@@ -1,7 +1,6 @@
 import { openai } from '@ai-sdk/openai';
 import { generateText, tool } from 'ai';
-import {getEthTransferObject} from '@/lib/tools/transactionObject';
-// import 'dotenv/config';
+import {getErc20TransferObject, getEthTransferObject} from '@/lib/tools/transactionObject';
 import { z } from 'zod';
 import { lookupENS } from '@/lib/tools/ensLookup';
 
@@ -17,6 +16,15 @@ export async function POST(req: Request) {
 				description: 'A tool for creating blockchain transaction object for eth_transfer classification type. Use this tool when classification result is eth_transfer_to_address or eth_transfer_to_ens.',
 				parameters: z.object({address: z.string(), amount: z.string()}),
 				execute: async ({address, amount}) => getEthTransferObject(address, amount)
+			}),
+            erc20Transfer: tool({
+				description: 'A tool for creating blockchain transaction object for erc20_transfer classification type. Use this tool when classification result is erc20_transfer_to_address or erc20_transfer_to_ens.',
+				parameters: z.object({
+                    token: z.string().describe("symbol or address of the token to interact with"),
+                    receiver: z.string().describe("address of the receiver"),
+                    amount: z.string().describe("amount of token to transfer")
+                }),
+				execute: async ({token, receiver, amount}) => getErc20TransferObject(token, receiver, amount)
 			}),
 			ensLookup: tool({
 				description: 'A tool for resolving ens names to ethereum addresses. Expects a valid ens name as input. Returns null if the ens name is not found and an address otherwise. Use this tool when classification result is eth_transfer_to_ens.',
@@ -45,10 +53,6 @@ export async function POST(req: Request) {
             'Use the tools provided to generate the transaction object. I.e. if you need to resolve ens name to address, use ensLookup tool. For formulating the transaction object use the ethTransfer tool.',
         prompt:
           JSON.stringify(messages),
-        // schema: z.object({
-        //     address: z.string(),
-        //     amount: z.string()
-        // })
     });
       
     console.log(`FINAL TOOL CALLS: ${JSON.stringify(toolCalls, null, 2)}`);
