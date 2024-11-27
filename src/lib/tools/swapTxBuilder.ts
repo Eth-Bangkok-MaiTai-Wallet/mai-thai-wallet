@@ -21,7 +21,7 @@ export async function getSwapTransaction(amount: string, fromToken: string, toTo
       },
       body: JSON.stringify({
         prompt,
-        address: "0x0000000000000000000000000000000000000000",
+        address,
       })
     });
 
