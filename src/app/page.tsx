@@ -9,14 +9,14 @@ import SignupButton from '../components/SignupButton';
 import { useAccount } from 'wagmi';
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { TransactionButton } from '@coinbase/onchainkit/transaction';
+// import { TransactionButton } from '@coinbase/onchainkit/transaction';
 import TransactionWrapper from '@/components/TransactionWrapper';
 import { BASE_CHAIN_ID } from '@/constants';
 import { Transaction } from '@/lib/tools/utils';
 
 export default function Chat() {
   const { address } = useAccount();
-  const { messages, input, handleInputChange, handleSubmit } = useChat();
+  const { isLoading,messages, input, handleInputChange, handleSubmit } = useChat();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   const [files, setFiles] = useState<FileList | undefined>(undefined);
@@ -45,16 +45,16 @@ export default function Chat() {
   }, [transactions])
 
   return (
-    <div className="flex h-full max-w-full flex-col items-center justify-between px-5">
-      <section className="mt-6 mb-6 flex w-full flex-col md:flex-row">
-        <div className="flex w-full flex-row items-center justify-between gap-2 md:gap-0">
+    <div className="flex flex-col h-screen">
+      <section className="flex items-center justify-between px-5 py-6">
+        <div className="flex items-center justify-between w-full gap-2 md:gap-0 md:flex-row">
           <a
             href="https://github.com/Eth-Bangkok-MaiTai-Wallet/next-ai-sdk"
             title="onchainkit"
             target="_blank"
             rel="noreferrer"
           >
-            <img src="/test2.svg" alt="Material-UI Logo" style={{ width: '100px' }} />
+            <Image src="/test2.svg" alt="Material-UI Logo" width={100} height={100} />
           </a>
           <div className="flex items-center gap-3">
             <SignupButton />
@@ -62,13 +62,13 @@ export default function Chat() {
           </div>
         </div>
       </section>
-      <section>
-        <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
+      <section className="flex-1 overflow-y-auto">
+        <div className="flex flex-col w-full max-w-md mx-auto">
           {messages.map(m => {
             // console.log('Experimental Attachments:', m?.experimental_attachments);
 
             return (
-              <div key={m.id} className="whitespace-pre-wrap">
+              <div key={m.id} className="whitespace-pre-wrap text-left">
                 {m.role !== 'system' && (m.role === 'user' ? 'User: ' : 'AI: ')}
                 {m.role !== 'system' ? m.content : ''}
                 <div>
@@ -89,50 +89,56 @@ export default function Chat() {
               </div>
             );
           })}
+          {isLoading && (
+            <div className="flex items-center justify-center mt-4">
+              <div className="w-8 h-8 border-4 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          )}
+        </div>
+      </section>
+      <section className="px-5 py-4">
+        <form
+          className="flex items-center w-full max-w-md mx-auto mb-4 space-x-2"
+          onSubmit={event => {
+            messages.push({
+              role: 'system',
+              content: JSON.stringify({ userAddress: address, chainId: BASE_CHAIN_ID }),
+              id: crypto.randomUUID(),
+            });
+            handleSubmit(event, {
+              experimental_attachments: files,
+            });
 
-          <form
-            className="w-full max-w-md p-2 mb-8 border border-gray-300 rounded shadow-xl space-y-2"
-            onSubmit={event => {
-              messages.push({
-                role: 'system',
-                content: JSON.stringify({ userAddress: address, chainId: BASE_CHAIN_ID }),
-                id: 'user-address',
-              });
-              handleSubmit(event, {
-                experimental_attachments: files,
-              });
+            setFiles(undefined);
 
-              setFiles(undefined);
-
-              if (fileInputRef.current) {
-                fileInputRef.current.value = '';
+            if (fileInputRef.current) {
+              fileInputRef.current.value = '';
+            }
+          }}
+        >
+          <input
+            className="w-full p-2 text-black text-left"
+            value={input}
+            placeholder="Say something..."
+            onChange={handleInputChange}
+          />
+          <input
+            type="file"
+            className="hidden"
+            onChange={event => {
+              if (event.target.files) {
+                setFiles(event.target.files);
               }
             }}
-          >
-            <input
-              type="file"
-              className=""
-              onChange={event => {
-                if (event.target.files) {
-                  setFiles(event.target.files);
-                }
-              }}
-              multiple
-              ref={fileInputRef}
-            />
-            <input
-              className="w-full p-2 text-black"
-              value={input}
-              placeholder="Say something..."
-              onChange={handleInputChange}
-            />
-          </form>
-        </div>
-        <div>
+            multiple
+            ref={fileInputRef}
+          />
+        </form>
+        <div className="w-full max-w-md mx-auto">
           <TransactionWrapper
-            onStatus={()=> {}}
-            transactions={transactions} 
-            chainId={BASE_CHAIN_ID} 
+            onStatus={() => {}}
+            transactions={transactions}
+            chainId={BASE_CHAIN_ID}
             disabled={false}
           />
         </div>

@@ -1,3 +1,4 @@
+import { getEthBalance } from '@/lib/tools/ethBalance';
 import { getTokenBalances } from '@/lib/tools/tokenBalance';
 import { openai } from '@ai-sdk/openai';
 import { generateText, tool } from 'ai';
@@ -15,7 +16,12 @@ export async function POST(req: Request) {
           tokenBalance: tool({
             description: 'A tool for fetching token balances for an Ethereum address. Expects a valid ethereum address as input along with the chain name (e.g. eth, base, sepolia, etc.)',
             parameters: z.object({ address: z.string(), chain: z.string() }),
-            execute: async ({ address, chain = 'eth' }) => getTokenBalances(address, chain),
+            execute: async ({ address, chain = JSON.parse(messages[0].content).chainId === 8453 ? 'base' : 'eth' }) => getTokenBalances(address, chain),
+          }),
+          ethBalance: tool({
+            description: 'A tool for fetching ETH balance for an Ethereum address. Expects a valid ethereum address as input along with the chain name (e.g. eth, base, sepolia, etc.)',
+            parameters: z.object({ address: z.string(), chain: z.string() }),
+            execute: async ({ address, chain = JSON.parse(messages[0].content).chainId === 8453 ? 'base' : 'eth' }) => getEthBalance(address, chain),
           }),
           answer: tool({
             description: 'A tool for providing the final answer.',

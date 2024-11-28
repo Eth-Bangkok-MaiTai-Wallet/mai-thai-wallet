@@ -6,7 +6,7 @@ interface Transaction {
   value: string;
 }
 
-export async function getSwapTransaction(amount: string, fromToken: string, toToken: string, address: string): Promise<SwapResponse[]> {
+export async function getSwapTransaction(amount: string, fromToken: string, toToken: string, address: string): Promise<Transaction[]> {
   try {
     const prompt = `I want to swap ${amount} ${fromToken} for ${toToken} on base`;
 
@@ -32,7 +32,7 @@ export async function getSwapTransaction(amount: string, fromToken: string, toTo
     const data = await response.json();
     const swapData = data.result[0].data;
 
-    const transactions: Transaction[] = swapData.steps.map((step: any) => ({
+    const transactions: Transaction[] = swapData.steps.map((step: {to: string, gasLimit: string, data: string, value: string}) => ({
       to: step.to,
       gasLimit: step.gasLimit,
       data: step.data,
