@@ -1,5 +1,5 @@
-
-interface SwapResponse {
+import { kv } from "@vercel/kv";
+interface Transaction {
   to: string;
   gasLimit: string;
   data: string;
@@ -32,15 +32,19 @@ export async function getSwapTransaction(amount: string, fromToken: string, toTo
     const data = await response.json();
     const swapData = data.result[0].data;
 
-    const transactions: SwapResponse[] = swapData.steps.map((step: any) => ({
+    const transactions: Transaction[] = swapData.steps.map((step: any) => ({
       to: step.to,
       gasLimit: step.gasLimit,
       data: step.data,
       value: step.value,
-
     }));
 
     console.log("----Swap Tx Builder----:", transactions);
+
+    await kv.set("transactions", JSON.stringify(transactions));
+
+    const storedTransaction: Transaction[] | null = await kv.get<Transaction[]>("transactions");
+    console.log("Stored transaction: ", storedTransaction);
 
     return transactions;
 

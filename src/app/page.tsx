@@ -12,11 +12,12 @@ import Image from 'next/image';
 import { TransactionButton } from '@coinbase/onchainkit/transaction';
 import TransactionWrapper from '@/components/TransactionWrapper';
 import { BASE_CHAIN_ID } from '@/constants';
+import { Transaction } from '@/lib/tools/utils';
 
 export default function Chat() {
   const { address } = useAccount();
   const { messages, input, handleInputChange, handleSubmit } = useChat();
-  const [transactionObject, setTransactionObject] = useState<any>();
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   const [files, setFiles] = useState<FileList | undefined>(undefined);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -27,8 +28,10 @@ export default function Chat() {
       try {
         const response = await fetch('/api/retrieve_transaction');
         const data = await response.json();
-        console.log("Stored transaction: ", data.transaction);
-        setTransactionObject(data.transaction);
+        console.log("Stored transaction: ", data.transactions);
+        if(data.transactions){
+          setTransactions(data.transactions);
+        }
       } catch (error) {
         console.error("Error fetching transaction:", error);
       }
@@ -38,11 +41,11 @@ export default function Chat() {
   }, [messages]);
 
   useEffect(() => {
-    console.log("TransactionObject in state: ", transactionObject)
-  }, [transactionObject])
+    console.log("TransactionObject in state: ", transactions)
+  }, [transactions])
 
   return (
-    <div className="flex h-full w-96 max-w-full flex-col px-1 md:w-[1008px]">
+    <div className="flex h-full max-w-full flex-col items-center justify-between px-5">
       <section className="mt-6 mb-6 flex w-full flex-col md:flex-row">
         <div className="flex w-full flex-row items-center justify-between gap-2 md:gap-0">
           <a
@@ -51,7 +54,7 @@ export default function Chat() {
             target="_blank"
             rel="noreferrer"
           >
-            <img src="/next.svg" alt="Material-UI Logo" style={{ width: '100px' }} />
+            <img src="/test2.svg" alt="Material-UI Logo" style={{ width: '100px' }} />
           </a>
           <div className="flex items-center gap-3">
             <SignupButton />
@@ -88,7 +91,7 @@ export default function Chat() {
           })}
 
           <form
-            className="fixed bottom-0 w-full max-w-md p-2 mb-8 border border-gray-300 rounded shadow-xl space-y-2"
+            className="w-full max-w-md p-2 mb-8 border border-gray-300 rounded shadow-xl space-y-2"
             onSubmit={event => {
               messages.push({
                 role: 'system',
@@ -128,7 +131,7 @@ export default function Chat() {
         <div>
           <TransactionWrapper
             onStatus={()=> {}}
-            transactionObject={transactionObject} 
+            transactions={transactions} 
             chainId={BASE_CHAIN_ID} 
             disabled={false}
           />

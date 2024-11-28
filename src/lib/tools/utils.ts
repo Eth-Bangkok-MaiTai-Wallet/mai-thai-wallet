@@ -12,3 +12,10 @@ export async function extractJSONFromStream(stream: any) {
     // Parse the JSON string
     return JSON.parse(result);
 }
+
+export interface Transaction {
+  to: string;
+  gasLimit?: string;
+  data: string;
+  value: string;
+}

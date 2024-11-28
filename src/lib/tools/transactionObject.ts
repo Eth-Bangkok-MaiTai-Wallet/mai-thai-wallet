@@ -3,19 +3,14 @@ import { usdc_base_abi } from "@/constants";
 import { kv } from "@vercel/kv";
 import { encodeFunctionData, parseUnits } from 'viem'; // Add viem import
 import { lookupENS } from "./ensLookup";
-
-interface TransactionObject {
-    to: string,
-    data: string,
-    value: string
-}
+import { Transaction } from "./utils";
   
 /**
  * Fetches token balances for an Ethereum address from Blockscout API
  * @param address The Ethereum address to look up
  * @returns Array of token balances with metadata
 */
-export async function getEthTransferObject(address: string, amount: string): Promise<TransactionObject> {
+export async function getEthTransferObject(address: string, amount: string): Promise<Transaction[]> {
     console.log('Running getEthTransferObject tool with address:', address, 'and amount:', amount);
     try {
       const transferObject = {
@@ -24,11 +19,11 @@ export async function getEthTransferObject(address: string, amount: string): Pro
         value: amount
       }
       
-      await kv.set("transaction", JSON.stringify(transferObject));
+      await kv.set("transactions", [JSON.stringify(transferObject)]);
 
-      const storedTransaction: TransactionObject | null = await kv.get<TransactionObject>("transaction");
+      const storedTransaction: Transaction[] | null = await kv.get<Transaction[]>("transactions");
       console.log("Stored transaction: ", storedTransaction);
-      return transferObject
+      return [transferObject]
   
     } catch (error) {
       console.error('Error fetching token balances:', error);
@@ -62,23 +57,16 @@ const emptyObject = {
   value: ""
 }
 
-function ensLookup(address: string): string {
-  return address
-}
-
-export async function getErc20TransferObject(token: string, receiver: string, amount: string): Promise<TransactionObject> {
+export async function getErc20TransferObject(token: string, receiver: string, amount: string): Promise<Transaction[]> {
   console.log('Running getErc20TransferObject tool with address:', token, 'receiver: ', receiver, 'and amount:', amount);
   try {
     if(!token || !receiver || !amount){
-      return emptyObject
+      return [emptyObject]
     }
-    console.log("HHH")
 
     if (!/^0x[a-fA-F0-9]{40}$/.test(token)) {
       token = tokenLookup(token)
     }
-
-    console.log("MMM")
 
     if (!/^0x[a-fA-F0-9]{40}$/.test(receiver)) {
       const receiver_address = await lookupENS(receiver)
@@ -86,16 +74,10 @@ export async function getErc20TransferObject(token: string, receiver: string, am
     }
 
     const decimals = tokenDecimals[token];
-    console.log("DDD: ", decimals)
 
     if(!token || !decimals || !receiver){
-      return emptyObject
+      return [emptyObject]
     }
-
-    console.log("----- Checking transaction object params -----")
-    console.log("Token: ", token)
-    console.log("Receiver: ", receiver)
-    console.log("Amount: ", amount)
 
     const transferObject = {
       to: token,
@@ -107,11 +89,11 @@ export async function getErc20TransferObject(token: string, receiver: string, am
       value: ""
     }
     
-    await kv.set("transaction", JSON.stringify(transferObject));
+    await kv.set("transactions", [JSON.stringify(transferObject)]);
 
-    const storedTransaction: TransactionObject | null = await kv.get<TransactionObject>("transaction");
+    const storedTransaction: Transaction[] | null = await kv.get<Transaction[]>("transactions");
     console.log("Stored transaction: ", storedTransaction);
-    return transferObject
+    return [transferObject]
 
   } catch (error) {
     console.error('Error fetching token balances:', error);

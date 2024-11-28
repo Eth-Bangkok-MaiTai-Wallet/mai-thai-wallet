@@ -43,6 +43,8 @@ export async function POST(req: Request) {
 
     console.log(`STEPS RESPONSE: ${JSON.stringify(toolCalls[0].args)}`);
 
+    
+
     return new Response(JSON.stringify(toolCalls[0].args), { 
         status: toolCalls.length ? 200 : 204,
         headers: { 'Content-Type': 'application/json' },

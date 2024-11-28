@@ -12,8 +12,9 @@ import type {
   TransactionResponse,
 } from '@coinbase/onchainkit/transaction';
 import { Address, ContractFunctionParameters, encodeFunctionData, parseEther, parseUnits } from 'viem';
+import { Transaction as BlockchainTransaction } from '@/lib/tools/utils';
 
-export default function TransactionWrapper({ onStatus, transactionObject, chainId, disabled, value }: { onStatus: any, transactionObject: any, chainId: number, disabled: boolean, value?: bigint }) {
+export default function TransactionWrapper({ onStatus, transactions, chainId, disabled, value }: { onStatus: any, transactions: BlockchainTransaction[], chainId: number, disabled: boolean, value?: bigint }) {
 
   //read transaction object from vercel KV database
 
@@ -35,13 +36,7 @@ export default function TransactionWrapper({ onStatus, transactionObject, chainI
   });
 
   // const address: any = `0x38F4152654AaBFA65f0de2296327927FBBA8a381`;
-  const calls = [
-    {
-      to: transactionObject?.to,
-      data: transactionObject?.data,
-      value: transactionObject?.value
-    },
-  ];
+  const calls = [...transactions]
 
   // const to = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'
   // const calls = [
