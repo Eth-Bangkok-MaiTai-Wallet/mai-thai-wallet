@@ -12,7 +12,7 @@ import Image from 'next/image';
 // import { TransactionButton } from '@coinbase/onchainkit/transaction';
 import TransactionWrapper from '@/components/TransactionWrapper';
 import { BASE_CHAIN_ID } from '@/constants';
-import { Transaction } from '@/lib/tools/utils';
+import { extractJSONFromStream, Transaction } from '@/lib/tools/utils';
 
 export default function Chat() {
   const { address } = useAccount();
@@ -27,8 +27,7 @@ export default function Chat() {
     const fetchTransaction = async () => {
       try {
         const response = await fetch('/api/retrieve_transaction');
-        const data = await response.json();
-        console.log("Stored transaction: ", data.transactions);
+        const data = await extractJSONFromStream(response.body)
         if(data.transactions){
           setTransactions(data.transactions);
         }
