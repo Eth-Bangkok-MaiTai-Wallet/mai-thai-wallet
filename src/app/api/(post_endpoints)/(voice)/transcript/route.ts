@@ -75,11 +75,11 @@ export function groupSegmentsIntoIntents(segments: Segment[], timeWindow: number
     return sentences;
 }
 
-export async function GET(req: Request) {
+export async function GET() {
     //const { userId, sessionId } = await req.json(); // Assuming userId and sessionId are sent in the request body
     const key = "intent"; // userId.toString().concat(sessionId)
 
-    let segments: Segment[] | null = await kv.get(key);
+    const segments: Segment[] | null = await kv.get(key);
 
     if(!segments){
         return new Response(JSON.stringify([]), {
@@ -88,7 +88,7 @@ export async function GET(req: Request) {
         })
     }
     
-    let intents = groupSegmentsIntoIntents(segments);
+    const intents = groupSegmentsIntoIntents(segments);
 
     return new Response(JSON.stringify(intents), { 
         status: 200,

@@ -1,3 +1,5 @@
+import { Hex } from "viem";
+
 export async function extractJSONFromStream(stream: any) {
     const reader = stream.getReader();
     const decoder = new TextDecoder();
@@ -14,8 +16,8 @@ export async function extractJSONFromStream(stream: any) {
 }
 
 export interface Transaction {
-  to: string;
-  gasLimit?: string;
-  data: string;
-  value: string;
+  to: Hex;
+  // gasLimit?: string;
+  data: Hex;
+  value: bigint;
 }

@@ -15,7 +15,7 @@ import { BASE_CHAIN_ID } from '@/constants';
 import { Transaction } from '@/lib/tools/utils';
 
 export default function Chat() {
-  const { address } = useAccount();
+  const { address, chainId, isConnected } = useAccount();
   const { isLoading,messages, input, handleInputChange, handleSubmit } = useChat();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
@@ -28,6 +28,8 @@ export default function Chat() {
       try {
         const response = await fetch('/api/retrieve_transaction');
         const data = await response.json();
+
+        console.log("data: ", data);
         console.log("Stored transaction: ", data.transactions);
         if(data.transactions){
           setTransactions(data.transactions);
@@ -40,9 +42,9 @@ export default function Chat() {
     fetchTransaction();
   }, [messages]);
 
-  useEffect(() => {
-    console.log("TransactionObject in state: ", transactions)
-  }, [transactions])
+  // useEffect(() => {
+  //   console.log("TransactionObject in state: ", transactions)
+  // }, [transactions])
 
   return (
     <div className="flex flex-col h-screen">
@@ -102,7 +104,7 @@ export default function Chat() {
           onSubmit={event => {
             messages.push({
               role: 'system',
-              content: JSON.stringify({ userAddress: address, chainId: BASE_CHAIN_ID }),
+              content: JSON.stringify({ userAddress: address, chainId: chainId }),
               id: crypto.randomUUID(),
             });
             handleSubmit(event, {
@@ -139,7 +141,7 @@ export default function Chat() {
             onStatus={() => {}}
             transactions={transactions}
             chainId={BASE_CHAIN_ID}
-            disabled={false}
+            disabled={!isConnected || !transactions || transactions.length === 0}
           />
         </div>
       </section>

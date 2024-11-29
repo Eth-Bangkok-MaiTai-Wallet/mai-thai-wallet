@@ -22,12 +22,16 @@ export const metadata: Metadata = {
 //style from CDP kit
 import '@coinbase/onchainkit/styles.css';
 import '@rainbow-me/rainbowkit/styles.css';
+import { kv } from "@vercel/kv";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  await kv.del("transactions");
+
   return (
     <html lang="en">
       <body

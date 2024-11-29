@@ -27,7 +27,7 @@ export async function getEthBalance(address: string, chain: string): Promise<Eth
 
     const client = createPublicClient({
       chain: chainConfig,
-      transport: http()
+      transport: http(`https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`)
     });
 
     const balanceWei = await client.getBalance({ address: address as `0x${string}` });

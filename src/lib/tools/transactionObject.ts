@@ -4,6 +4,7 @@ import { kv } from "@vercel/kv";
 import { encodeFunctionData, parseUnits } from 'viem'; // Add viem import
 import { lookupENS } from "./ensLookup";
 import { Transaction } from "./utils";
+import { Hex } from "viem";
   
 /**
  * Fetches token balances for an Ethereum address from Blockscout API
@@ -14,12 +15,12 @@ export async function getEthTransferObject(address: string, amount: string): Pro
     console.log('Running getEthTransferObject tool with address:', address, 'and amount:', amount);
     try {
       const transferObject = {
-        to: address,
-        data: "",
-        value: amount
+        to: address as Hex,
+        data: "0x" as Hex,
+        value: BigInt(amount)
       }
       
-      await kv.set("transactions", [JSON.stringify(transferObject)]);
+      await kv.set("transactions", [transferObject]);
 
       const storedTransaction: Transaction[] | null = await kv.get<Transaction[]>("transactions");
       console.log("Stored transaction: ", storedTransaction);
@@ -31,7 +32,7 @@ export async function getEthTransferObject(address: string, amount: string): Pro
     }
 }
 
-function tokenLookup(token: string) : string {
+function tokenLookup(token: string) : Hex {
   token = token.toLowerCase()
   switch (token) {
     case 'usdc':
@@ -41,27 +42,27 @@ function tokenLookup(token: string) : string {
     case 'dai':
       return '0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb';
     default:
-      return '';
+      return '0x' as Hex;
   }
 }
 
-const tokenDecimals: any = {
+const tokenDecimals: Record<Hex, number> = {
   '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913': 6,
   '0x4200000000000000000000000000000000000006': 18,
   '0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb': 18
 }
 
-const emptyObject = {
-  to: "",
-  data: "",
-  value: ""
-}
+// const emptyObject = {
+//   to: "",
+//   data: "",
+//   value: ""
+// }
 
 export async function getErc20TransferObject(token: string, receiver: string, amount: string): Promise<Transaction[]> {
   console.log('Running getErc20TransferObject tool with address:', token, 'receiver: ', receiver, 'and amount:', amount);
   try {
     if(!token || !receiver || !amount){
-      return [emptyObject]
+      return []
     }
 
     if (!/^0x[a-fA-F0-9]{40}$/.test(token)) {
@@ -73,20 +74,20 @@ export async function getErc20TransferObject(token: string, receiver: string, am
       receiver = receiver_address ? receiver_address : ""
     }
 
-    const decimals = tokenDecimals[token];
+    const decimals = tokenDecimals[token as Hex];
 
     if(!token || !decimals || !receiver){
-      return [emptyObject]
+      return []
     }
 
     const transferObject = {
-      to: token,
+      to: token as Hex,
       data: encodeFunctionData({
         abi: usdc_base_abi,
         functionName: 'transfer',
         args: [receiver, parseUnits(amount, decimals)]
       }),
-      value: ""
+      value: BigInt(0)
     }
     
     await kv.set("transactions", [JSON.stringify(transferObject)]);
