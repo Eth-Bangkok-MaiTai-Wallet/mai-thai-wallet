@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mai Thai Wallet
+“Just as the Mai Tai evokes feelings of relaxation and adventure, 
+your wallet can aim to make blockchain interactions feel less intimidating 
+and more inviting, especially for beginners.”
+
+## Introduction
+
+Mai Thai Wallet aims to make blockchain interactions as seamless and enjoyable as sipping a perfectly crafted cocktail. Users can effortlessly chat or even speak with the wallet to transfer or swap tokens, check balances, and more-all without needing prior blockchain experience. Designed with inclusivity in mind, Mai Thai is a trusted companion for users with visual impairments and a seamless fit for augmented reality and gaming applications, offering a cutting-edge yet accessible experience that prioritizes usability and innovation.
+
+## Key Features
+**Seamless Interaction:** Users can effortlessly communicate with their wallet using voice commands or a chat-based interface, enabling them to express their intents naturally and intuitively.
+
+**AI Agents:** Mai Thai leverages advanced intelligent systems to analyze and classify user intents, seamlessly converting them into precise blockchain transactions.
+
+**Smart Wallet:** Empowers users to generate a new wallet secured by a pass key, offering a robust self-custody solution. Leveraging account abstraction, it supports advanced features like transaction bundling, gas sponsorship, and seamless automation, enhancing both convenience and user control.
+
+## Architecture
+![alt text](public/architecture.png)
+
+
+### Technologies
+- **[Omi](https://www.omi.me/)** - using omi device we record voice intents from users and parse them to textual format
+- [CDP Smart Wallet](https://docs.cdp.coinbase.com/) - Smart account with passkey login and account abstraction feature like transaction bundling and gas sponsoring
+- [Vercel AI SDK](https://sdk.vercel.ai/) - used to interact with different AI engines and streaming text results to the UI
+- [Brian API](https://docs.brianknows.org/brian-api/apis) - executing ERC20 swap intents
+- [Akash API](https://chatapi.akash.network/) - using Llama3 deployed on Akash for generating text responses to users
+- [Blockscout API](https://docs.blockscout.com/devs/apis) - verifying token addresses, getting ABI arrays of the tokens, retrieving token lists
 
 ## Getting Started
+1. Setup env variables `copy .env.example .env`
+2. Run application locally `yarn dev`
+3. Open [http://localhost:3000](http://localhost:3000) with your browser, and start interacting with the wallet 
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Future Work
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+We plan to integrate more features in the future, such as: 
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Voice recognition security** - ensuring that only owner can communicate with the wallet, preventing malicious behaviour
+- **Cross-chain support** - enable cross-chain execution of user intents
+- **Mobile application** - creating mobile application or omi app extension, enhancing user experience when chatting with the wallet 
