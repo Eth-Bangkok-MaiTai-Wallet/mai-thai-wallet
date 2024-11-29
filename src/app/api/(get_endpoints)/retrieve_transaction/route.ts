@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server';
 export async function GET() {
   try {
     const transactions = await kv.get("transactions");
+    console.log("transactions: ", transactions);
     return NextResponse.json({ transactions });
   } catch (error) {
     console.error("Error fetching transaction:", error);

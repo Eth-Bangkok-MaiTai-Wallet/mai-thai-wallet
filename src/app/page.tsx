@@ -135,14 +135,16 @@ export default function Chat() {
             ref={fileInputRef}
           />
         </form>
-        <div className="w-full max-w-md mx-auto">
-          <TransactionWrapper
-            onStatus={() => {}}
-            transactions={transactions}
-            chainId={BASE_CHAIN_ID}
-            disabled={!isConnected || !transactions || transactions.length === 0}
-          />
-        </div>
+        {!isConnected || !transactions || transactions.length === 0 ? null : (
+          <div className="w-full max-w-md mx-auto">
+            <TransactionWrapper
+              onStatus={() => {}}
+              transactions={transactions}
+              chainId={BASE_CHAIN_ID}
+              disabled={false}
+            />
+          </div>
+        )}
       </section>
     </div>
   );

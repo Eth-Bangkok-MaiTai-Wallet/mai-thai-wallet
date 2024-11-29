@@ -13,7 +13,7 @@ export async function POST(req: Request) {
         model: openai('gpt-4o-2024-08-06', { structuredOutputs: true }),
         tools: {
             ethTransfer: tool({
-              description: 'A tool for creating blockchain transaction object for eth_transfer classification type. Use this tool when classification result is eth_transfer_to_address or eth_transfer_to_ens.',
+              description: 'A tool for creating blockchain transaction object for eth_transfer classification type. Use this tool when classification result is eth_transfer_to_address or eth_transfer_to_ens. Make sure to convert all amounts to wei unless spcified in wei',
               parameters: z.object({address: z.string(), amount: z.string()}),
               execute: async ({address, amount}) => getEthTransferObject(address, amount)
             }),

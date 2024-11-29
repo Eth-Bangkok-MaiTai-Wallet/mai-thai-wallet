@@ -17,7 +17,7 @@ export async function getEthTransferObject(address: string, amount: string): Pro
       const transferObject = {
         to: address as Hex,
         data: "0x" as Hex,
-        value: BigInt(amount)
+        value: amount
       }
       
       await kv.set("transactions", [transferObject]);
@@ -87,7 +87,7 @@ export async function getErc20TransferObject(token: string, receiver: string, am
         functionName: 'transfer',
         args: [receiver, parseUnits(amount, decimals)]
       }),
-      value: BigInt(0)
+      value: '0'
     }
     
     await kv.set("transactions", [transferObject]);

@@ -5,7 +5,7 @@ import {
   TransactionButton,
   TransactionStatus,
   TransactionStatusAction,
-  TransactionStatusLabel,
+  TransactionStatusLabel
 } from '@coinbase/onchainkit/transaction';
 import type {
   LifecycleStatus,
@@ -47,7 +47,12 @@ export default function TransactionWrapper({
   // });
 
   // const address: any = `0x38F4152654AaBFA65f0de2296327927FBBA8a381`;
-  const calls = [...transactions]
+
+  const convertedTransactions = transactions.map(transaction => ({
+    ...transaction,
+    value: BigInt(transaction.value)
+  }));
+  const calls = [...convertedTransactions]
 
   console.log("Calls: ", calls)
 

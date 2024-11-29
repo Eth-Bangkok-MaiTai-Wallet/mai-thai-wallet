@@ -19,5 +19,5 @@ export interface Transaction {
   to: Hex;
   // gasLimit?: string;
   data: Hex;
-  value: bigint;
+  value: string;
 }
