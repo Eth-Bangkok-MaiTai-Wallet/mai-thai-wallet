@@ -90,7 +90,7 @@ export async function getErc20TransferObject(token: string, receiver: string, am
       value: BigInt(0)
     }
     
-    await kv.set("transactions", [JSON.stringify(transferObject)]);
+    await kv.set("transactions", [transferObject]);
 
     const storedTransaction: Transaction[] | null = await kv.get<Transaction[]>("transactions");
     console.log("Stored transaction: ", storedTransaction);
