@@ -17,7 +17,6 @@ Mai Thai Wallet aims to make blockchain interactions as seamless and enjoyable a
 ## Architecture
 ![alt text](public/architecture.png)
 
-
 ### Technologies
 - **[Omi](https://www.omi.me/)** - using omi device we record voice intents from users and parse them to textual format
 - [CDP Smart Wallet](https://docs.cdp.coinbase.com/) - Smart account with passkey login and account abstraction feature like transaction bundling and gas sponsoring
