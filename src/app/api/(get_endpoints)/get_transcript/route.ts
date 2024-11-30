@@ -1,7 +1,7 @@
 import { Segment } from "@/lib/utils";
 import { kv } from "@vercel/kv";
 
-interface Message {
+export interface Message {
     role: string, 
     content: string
 }
@@ -48,8 +48,9 @@ export async function GET() {
     const segments: Segment[] | null = await kv.get(key);
 
     if(!segments){
+        // await kv.set(key, []);
         return new Response(JSON.stringify([]), {
-            status: 404,
+            status: 200,
             headers: { 'Content-Type': 'application/json' },
         })
     }

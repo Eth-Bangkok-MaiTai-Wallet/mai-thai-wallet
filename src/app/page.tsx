@@ -9,18 +9,18 @@ import SignupButton from '../components/SignupButton';
 import { useAccount } from 'wagmi';
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-// import { TransactionButton } from '@coinbase/onchainkit/transaction';
 import TransactionWrapper from '@/components/TransactionWrapper';
 import { BASE_CHAIN_ID } from '@/constants';
 import { Transaction } from '@/lib/utils';
+import { Message } from './api/(get_endpoints)/get_transcript/route';
 
 export default function Chat() {
   const { address, chainId, isConnected } = useAccount();
-  const { isLoading, messages, input, handleInputChange, handleSubmit } = useChat();
+  const { isLoading, messages, input, append, handleInputChange, handleSubmit } = useChat();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-
   const [files, setFiles] = useState<FileList | undefined>(undefined);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [voiceIntents, setVoiceIntents] = useState<Message[]>([]);
   
 
   useEffect(() => {
@@ -41,9 +41,42 @@ export default function Chat() {
     fetchTransaction();
   }, [messages]);
 
-  // useEffect(() => {
-  //   console.log("TransactionObject in state: ", transactions)
-  // }, [transactions])
+  useEffect(() => {
+    const fetchVoiceIntents = async () => {
+      try {
+        const response = await fetch('/api/get_transcript');
+        const voiceIntents = await response.json();
+        console.log("Voice intents: ", voiceIntents)
+
+        if(voiceIntents){
+          setVoiceIntents(voiceIntents)
+        }
+      } catch (error) {
+        console.error("Error fetching transaction:", error);
+      }
+    };
+  
+    fetchVoiceIntents();
+    const intervalId = setInterval(fetchVoiceIntents, 5000);
+  
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const handleVoiceIntents = async () => {
+    try{
+      fetch('/api/clear_intents', {
+        method: "POST"
+      });
+    } catch (error) {
+      console.error("Error fetching transaction:", error);
+    }
+
+    for (const intent of voiceIntents) {
+      append({role: intent.role as "system" | "user" | "assistant", content: intent.content, id: crypto.randomUUID()});
+    }
+
+    setVoiceIntents([]);
+  }
 
   return (
     <div className="flex flex-col h-screen">
@@ -66,8 +99,6 @@ export default function Chat() {
       <section className="flex-1 overflow-y-auto">
         <div className="flex flex-col w-full max-w-md mx-auto">
           {messages.map(m => {
-            // console.log('Experimental Attachments:', m?.experimental_attachments);
-
             return (
               <div key={m.id} className="whitespace-pre-wrap text-left">
                 {m.role !== 'system' && (m.role === 'user' ? 'User: ' : 'AI: ')}
@@ -106,7 +137,7 @@ export default function Chat() {
               content: JSON.stringify({ userAddress: address, chainId: chainId }),
               id: crypto.randomUUID(),
             });
-            
+
             handleSubmit(event, {
               experimental_attachments: files,
             });
@@ -124,6 +155,11 @@ export default function Chat() {
             placeholder="Say something..."
             onChange={handleInputChange}
           />
+          <button 
+            disabled={!voiceIntents || voiceIntents.length === 0} 
+            className={`rounded-md px-4 py-2 ${!voiceIntents || voiceIntents.length === 0 ? 'bg-gray-400' : 'bg-blue-500 text-white hover:bg-blue-600'}`} 
+            onClick={handleVoiceIntents}
+          >Execute voice intents</button>
           <input
             type="file"
             className="hidden"
