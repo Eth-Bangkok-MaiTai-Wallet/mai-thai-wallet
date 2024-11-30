@@ -19,6 +19,7 @@ export default function TransactionWrapper({
   onStatus, 
   transactions, 
   chainId,
+  disabled
 }: { 
   onStatus: (status: string) => void,
   transactions: BlockchainTransaction[], 
@@ -85,7 +86,7 @@ export default function TransactionWrapper({
         onSuccess={handleSuccess}
         onStatus={(lifecycleStatus: LifecycleStatus) => onStatus(lifecycleStatus.statusName)}
       >
-        <TransactionButton className="mt-0 mr-auto ml-auto w-[450px] max-w-full text-[white]" />
+        <TransactionButton disabled={disabled} className="mt-0 mr-auto ml-auto w-[450px] max-w-full text-[white]" />
         <TransactionStatus>
           <TransactionStatusLabel />
           <TransactionStatusAction />

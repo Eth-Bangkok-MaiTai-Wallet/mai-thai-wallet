@@ -3,6 +3,7 @@ import { generateText, tool } from 'ai';
 import {getErc20TransferObject, getEthTransferObject} from '@/lib/tools/transactionObject';
 import { z } from 'zod';
 import { lookupENS } from '@/lib/tools/ensLookup';
+import { getAddressForSymbol, getTokenBalances } from '@/lib/tools/tokenBalance';
 
 export async function POST(req: Request) {
     const { messages } = await req.json();
@@ -13,12 +14,12 @@ export async function POST(req: Request) {
         model: openai('gpt-4o-2024-08-06', { structuredOutputs: true }),
         tools: {
             ethTransfer: tool({
-              description: 'A tool for creating blockchain transaction object for eth_transfer classification type. Use this tool when classification result is eth_transfer_to_address or eth_transfer_to_ens. Make sure to convert all amounts to wei unless spcified in wei',
+              description: 'A tool for creating blockchain transaction object for eth_transfer classification type. Use this tool when classification result is eth_transfer_to_address or eth_transfer_to_ens.  Make sure to convert all amounts to wei unless spcified in wei.',
               parameters: z.object({address: z.string(), amount: z.string()}),
               execute: async ({address, amount}) => getEthTransferObject(address, amount)
             }),
-                  erc20Transfer: tool({
-              description: 'A tool for creating blockchain transaction object for erc20_transfer classification type. Use this tool when classification result is erc20_transfer_to_address or erc20_transfer_to_ens.',
+            erc20Transfer: tool({
+              description: 'A tool for creating blockchain transaction object for erc20_transfer classification type. Use this tool when classification result is erc20_transfer_to_address or erc20_transfer_to_ens. Make sure to convert all amount depending on the decimals of erc20 token. To check decimals for erc20 token, you can use tokenDecimals tool',
               parameters: z.object({
                           token: z.string().describe("symbol or address of the token to interact with"),
                           receiver: z.string().describe("address of the receiver"),
@@ -30,6 +31,16 @@ export async function POST(req: Request) {
               description: 'A tool for resolving ens names to ethereum addresses. Expects a valid ens name as input. Returns null if the ens name is not found and an address otherwise. Use this tool when classification result is eth_transfer_to_ens.',
               parameters: z.object({ens: z.string()}),
               execute: async ({ens}) => lookupENS(ens)
+            }),
+            tokenDecimals: tool({
+              description: 'A tool for fetching token decimals for an Ethereum address. Expects a valid ethereum address as input along with the chain name (e.g. eth, base, sepolia, etc.)',
+              parameters: z.object({ address: z.string(), chain: z.string() }),
+              execute: async ({ address, chain = 'base' }) => getTokenBalances(address, chain),
+            }),
+            tokenAddress: tool({
+              description: 'A tool for getting token address from a symbol. Expects a token symbol as an input along with the chain name (e.g. eth, base, sepolia, etc.)',
+              parameters: z.object({ symbol: z.string(), chain: z.string() }),
+              execute: async ({ symbol, chain = 'base' }) => getAddressForSymbol(symbol, chain),
             }),
             answer: tool({
                 description: 'A tool for providing the final answer.',
