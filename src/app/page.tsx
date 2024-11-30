@@ -3,7 +3,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { useChat } from 'ai/react';
+import { Message, useChat } from 'ai/react';
 import LoginButton from '../components/LoginButton';
 import SignupButton from '../components/SignupButton';
 import { useAccount } from 'wagmi';
@@ -16,7 +16,7 @@ import { Transaction } from '@/lib/utils';
 
 export default function Chat() {
   const { address, chainId, isConnected } = useAccount();
-  const { isLoading, messages, input, handleInputChange, handleSubmit } = useChat();
+  const { isLoading, messages, input, append, handleInputChange, handleSubmit } = useChat();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   const [files, setFiles] = useState<FileList | undefined>(undefined);
@@ -41,9 +41,32 @@ export default function Chat() {
     fetchTransaction();
   }, [messages]);
 
-  // useEffect(() => {
-  //   console.log("TransactionObject in state: ", transactions)
-  // }, [transactions])
+  const handleTranscriptSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    try {
+      const response = await fetch('/api/get_transcript');
+      const data = await response.json();
+
+      console.log("Transcript: ", data);
+
+      if (data) {
+        // const messageObject: Message = {
+        //   id: crypto.randomUUID(),
+        //   content: data,
+        //   role: 'user',
+        // };
+
+        append({
+          id: crypto.randomUUID(),
+          content: data[0].content,
+          role: 'user',
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching transcript:', error);
+    }
+  };
 
   return (
     <div className="flex flex-col h-screen">
@@ -144,6 +167,12 @@ export default function Chat() {
               disabled={!isConnected || !transactions || transactions.length === 0}
             />
           </div>
+          <button
+              className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
+              onClick={handleTranscriptSubmit}
+            >
+            Transcript
+          </button>
       </section>
     </div>
   );

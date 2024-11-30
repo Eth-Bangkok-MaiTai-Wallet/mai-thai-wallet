@@ -42,21 +42,32 @@ function groupSegmentsIntoIntents(segments: Segment[], timeWindow: number = 5): 
 }
 
 export async function GET() {
+    const testSegments: Segment[] = [
+        { start: 0, end: 1, text: "I", speaker: "Speaker1", speaker_id: 1, is_user: true, person_id: 1 },
+        { start: 2, end: 3, text: "want to", speaker: "Speaker1", speaker_id: 1, is_user: true, person_id: 1 },
+        { start: 4, end: 5, text: "send 0.0001 eth", speaker: "Speaker1", speaker_id: 1, is_user: true, person_id: 1 },
+        { start: 6, end: 7, text: "to vitalik.eth", speaker: "Speaker1", speaker_id: 1, is_user: true, person_id: 1 },
+        // { start: 12, end: 13, text: "I", speaker: "Speaker1", speaker_id: 1, is_user: true, person_id: 1 },
+    ];
+
+    const testIntents = groupSegmentsIntoIntents(testSegments);
+
+    console.log("Test Intents:", testIntents);
     //const { userId, sessionId } = await req.json(); // Assuming userId and sessionId are sent in the request body
-    const key = "intent"; // userId.toString().concat(sessionId)
+    // const key = "intent"; // userId.toString().concat(sessionId)
 
-    const segments: Segment[] | null = await kv.get(key);
+    // const segments: Segment[] | null = await kv.get(key);
 
-    if(!segments){
-        return new Response(JSON.stringify([]), {
-            status: 404,
-            headers: { 'Content-Type': 'application/json' },
-        })
-    }
+    // if(!segments){
+    //     return new Response(JSON.stringify([]), {
+    //         status: 404,
+    //         headers: { 'Content-Type': 'application/json' },
+    //     })
+    // }
     
-    const intents = groupSegmentsIntoIntents(segments);
+    // const intents = groupSegmentsIntoIntents(segments);
 
-    return new Response(JSON.stringify(intents), { 
+    return new Response(JSON.stringify(testIntents), { 
         status: 200,
         headers: { 'Content-Type': 'application/json' },
     });

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export const config = {
-  matcher: ['/api/get_transcript', '/api/agent/:path*', '/api/attachment', '/api/classification'],
+  matcher: ['/api/agent/:path*', '/api/attachment', '/api/classification'],
 };
 
 export function middleware(request: NextRequest) {
