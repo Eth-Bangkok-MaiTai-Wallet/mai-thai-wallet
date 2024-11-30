@@ -1,5 +1,5 @@
 import { Hex } from "viem";
-import { extractJSONFromStream } from "./utils";
+import { extractJSONFromStream } from "../utils";
 interface TokenBalance {
   token: {
     address: string;

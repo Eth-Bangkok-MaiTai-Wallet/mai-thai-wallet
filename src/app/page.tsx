@@ -12,7 +12,7 @@ import Image from 'next/image';
 // import { TransactionButton } from '@coinbase/onchainkit/transaction';
 import TransactionWrapper from '@/components/TransactionWrapper';
 import { BASE_CHAIN_ID } from '@/constants';
-import { Transaction } from '@/lib/tools/utils';
+import { Transaction } from '@/lib/utils';
 
 export default function Chat() {
   const { address, chainId, isConnected } = useAccount();

@@ -3,7 +3,7 @@ import { usdc_base_abi } from "@/constants";
 import { kv } from "@vercel/kv";
 import { encodeFunctionData, parseUnits } from 'viem'; // Add viem import
 import { lookupENS } from "./ensLookup";
-import { Transaction } from "./utils";
+import { Transaction } from "../utils";
 import { Hex } from "viem";
   
 /**

@@ -1,6 +1,9 @@
 import { Hex } from "viem";
 
-export async function extractJSONFromStream(stream: any) {
+export async function extractJSONFromStream(stream: ReadableStream | null) {
+    if (!stream) {
+        return null;
+    }
     const reader = stream.getReader();
     const decoder = new TextDecoder();
     let result = "";
@@ -20,4 +23,14 @@ export interface Transaction {
   // gasLimit?: string;
   data: Hex;
   value: string;
+}
+
+export interface Segment {
+  text: string,
+  speaker: string,
+  speaker_id: number,
+  is_user: boolean,
+  person_id: number,
+  start: number,
+  end: number
 }
