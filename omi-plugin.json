@@ -1,0 +1,17 @@
+{
+    "id": "mai-thai-wallet",
+    "name": "Mai Thai Wallet",
+    "author": "Mai Thai Team",
+    "description": "Mai Thai Wallet is a crypto wallet controlled by intents",
+    "image": "/public/test2.svg",
+    "capabilities": [
+      "external_integration"
+    ],
+    "external_integration": {
+      "triggers_on": "transcript_processed",
+      "webhook_url": "http://localhost:3000/api/transcript",
+      "setup_completed_url": null,
+      "setup_instructions_file_path": "/README.md"
+    },
+    "deleted": false
+  }

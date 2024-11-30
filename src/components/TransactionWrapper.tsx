@@ -13,7 +13,7 @@ import type {
   TransactionResponse,
 } from '@coinbase/onchainkit/transaction';
 // import { encodeFunctionData, parseUnits } from 'viem';
-import { Transaction as BlockchainTransaction } from '@/lib/tools/utils';
+import { Transaction as BlockchainTransaction } from '@/lib/utils';
 
 export default function TransactionWrapper({ 
   onStatus, 

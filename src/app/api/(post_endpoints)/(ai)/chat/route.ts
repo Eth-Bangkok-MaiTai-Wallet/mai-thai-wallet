@@ -1,5 +1,5 @@
 import { registry } from '@/lib/providerRegistry';
-import { extractJSONFromStream } from '@/lib/tools/utils';
+import { extractJSONFromStream } from '@/lib/utils';
 // import { openai } from '@ai-sdk/openai';
 import { CoreMessage, streamText } from 'ai';
 
@@ -92,9 +92,11 @@ const callAgent = async (messages: CoreMessage[], route: string) => {
     method: 'POST',
     body: JSON.stringify({ messages }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'x-api-key': process.env.MAITHAI_API_KEY || '',
     }
   });
+
 
   if (agentResponse.ok && agentResponse.status !== 204) {
     const agentResult = await agentResponse.json();
@@ -134,7 +136,8 @@ const classifyMessages = async (messages: CoreMessage[]): Promise<string | null>
     method: 'POST',
     body: JSON.stringify({ messages }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'x-api-key': process.env.MAITHAI_API_KEY || '',
     }
   });
 
@@ -152,7 +155,8 @@ const extractAddressFromImage = async (messages: CoreMessage[]): Promise<CoreMes
     method: 'POST',
     body: JSON.stringify({ messages }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'x-api-key': process.env.MAITHAI_API_KEY || '',
     }
   });
 
@@ -168,8 +172,11 @@ const extractAddressFromImage = async (messages: CoreMessage[]): Promise<CoreMes
 
 const retrieveVoiceIntents = async (): Promise<CoreMessage[] | null> => {
   
-  let voiceIntents: any = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/transcript`, {
-    method: 'GET'
+  let voiceIntents: any = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/get_transcript`, {
+    method: 'GET',
+    headers: {
+      'x-api-key': process.env.MAITHAI_API_KEY || '',
+    }
   })
   
   if (voiceIntents.ok) {
