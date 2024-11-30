@@ -49,7 +49,8 @@ function tokenLookup(token: string) : Hex {
 const tokenDecimals: Record<Hex, number> = {
   '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913': 6,
   '0x4200000000000000000000000000000000000006': 18,
-  '0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb': 18
+  '0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb': 18,
+  '0x0555E30da8f98308EdB960aa94C0Db47230d2B9c': 8,
 }
 
 // const emptyObject = {
@@ -79,6 +80,9 @@ export async function getErc20TransferObject(token: string, receiver: string, am
     if(!token || !decimals || !receiver){
       return []
     }
+
+    console.log("Amount in getErc20TransferObject tool: ", amount)
+    console.log("After parsing: ", parseUnits(amount, decimals))
 
     const transferObject = {
       to: token as Hex,

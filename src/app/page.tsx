@@ -135,16 +135,14 @@ export default function Chat() {
             ref={fileInputRef}
           />
         </form>
-        {!isConnected || !transactions || transactions.length === 0 ? null : (
           <div className="w-full max-w-md mx-auto">
             <TransactionWrapper
               onStatus={() => {}}
               transactions={transactions}
               chainId={BASE_CHAIN_ID}
-              disabled={false}
+              disabled={!isConnected || !transactions || transactions.length === 0}
             />
           </div>
-        )}
       </section>
     </div>
   );

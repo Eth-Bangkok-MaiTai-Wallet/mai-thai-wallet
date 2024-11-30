@@ -120,9 +120,9 @@ const agentRouter = async (messages: CoreMessage[], classificationResult: string
     case 'eth_transfer_to_ens':
       return callAgent(messages, 'transfer');
     case 'erc20_transfer_to_address':
-      return callAgent(messages, 'transfer');
+      return callAgent(messages, 'erc20_transfer');
     case 'erc20_transfer_to_ens':
-      return callAgent(messages, 'transfer');
+      return callAgent(messages, 'erc20_transfer');
     case 'erc20_swap':
       return callAgent(messages, 'swap');
     default:
