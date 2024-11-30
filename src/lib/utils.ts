@@ -1,6 +1,9 @@
 import { Hex } from "viem";
 
-export async function extractJSONFromStream(stream: ReadableStream) {
+export async function extractJSONFromStream(stream: ReadableStream | null) {
+    if (!stream) {
+        return null;
+    }
     const reader = stream.getReader();
     const decoder = new TextDecoder();
     let result = "";
