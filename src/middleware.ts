@@ -2,14 +2,13 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export const config = {
-  matcher: ['/api/get_transcript', '/api/agent/:path*', '/api/attachment', '/api/classification'],
+  matcher: ['/api/agent/:path*', '/api/attachment', '/api/classification'],
 };
 
 export function middleware(request: NextRequest) {
   console.log('Middleware executed');
 
   const apiKey = request.headers.get('x-api-key');
-  console.log("API Key: ", apiKey)
 
   if (apiKey !== process.env.MAITHAI_API_KEY) {
     console.log('Unauthorized request');

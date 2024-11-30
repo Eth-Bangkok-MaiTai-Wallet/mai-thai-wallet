@@ -9,16 +9,14 @@ import SignupButton from '../components/SignupButton';
 import { useAccount } from 'wagmi';
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-// import { TransactionButton } from '@coinbase/onchainkit/transaction';
 import TransactionWrapper from '@/components/TransactionWrapper';
 import { BASE_CHAIN_ID } from '@/constants';
 import { Transaction } from '@/lib/utils';
-import { CoreMessage } from 'ai';
 import { Message } from './api/(get_endpoints)/get_transcript/route';
 
 export default function Chat() {
   const { address, chainId, isConnected } = useAccount();
-  const { isLoading, messages, input, handleInputChange, handleSubmit } = useChat();
+  const { isLoading, messages, input, append, handleInputChange, handleSubmit } = useChat();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [files, setFiles] = useState<FileList | undefined>(undefined);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -46,13 +44,7 @@ export default function Chat() {
   useEffect(() => {
     const fetchVoiceIntents = async () => {
       try {
-        console.log("Inside fetch voice intents...")
-        const response = await fetch('/api/get_transcript', {
-          headers: {
-            'x-api-key': process.env.NEXT_PUBLIC_MAITHAI_API_KEY || '',
-          }
-        });
-        console.log("Response: ", response)
+        const response = await fetch('/api/get_transcript');
         const voiceIntents = await response.json();
         console.log("Voice intents: ", voiceIntents)
 
@@ -64,18 +56,27 @@ export default function Chat() {
       }
     };
   
-    fetchVoiceIntents(); // Initial fetch
-    const intervalId = setInterval(fetchVoiceIntents, 5000); // Fetch every 5 seconds
+    fetchVoiceIntents();
+    const intervalId = setInterval(fetchVoiceIntents, 5000);
   
-    return () => clearInterval(intervalId); // Cleanup on unmount
+    return () => clearInterval(intervalId);
   }, []);
 
+  const handleVoiceIntents = async () => {
+    try{
+      fetch('/api/clear_intents', {
+        method: "POST"
+      });
+    } catch (error) {
+      console.error("Error fetching transaction:", error);
+    }
 
+    for (const intent of voiceIntents) {
+      append({role: intent.role as "system" | "user" | "assistant", content: intent.content, id: crypto.randomUUID()});
+    }
 
-
-  // useEffect(() => {
-  //   console.log("TransactionObject in state: ", transactions)
-  // }, [transactions])
+    setVoiceIntents([]);
+  }
 
   return (
     <div className="flex flex-col h-screen">
@@ -98,8 +99,6 @@ export default function Chat() {
       <section className="flex-1 overflow-y-auto">
         <div className="flex flex-col w-full max-w-md mx-auto">
           {messages.map(m => {
-            // console.log('Experimental Attachments:', m?.experimental_attachments);
-
             return (
               <div key={m.id} className="whitespace-pre-wrap text-left">
                 {m.role !== 'system' && (m.role === 'user' ? 'User: ' : 'AI: ')}
@@ -157,24 +156,9 @@ export default function Chat() {
             onChange={handleInputChange}
           />
           <button 
-            disabled={!voiceIntents} 
-            className="bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600" 
-            onClick={event => {
-              for (const intent of voiceIntents) {
-                messages.push({role: intent.role as "system" | "user" | "assistant", content: intent.content, id: crypto.randomUUID()});
-              }
-  
-              handleSubmit(event, {
-                experimental_attachments: files,
-              });
-
-              setFiles(undefined);
-
-              if (fileInputRef.current) {
-                fileInputRef.current.value = '';
-              }
-
-            }}
+            disabled={!voiceIntents || voiceIntents.length === 0} 
+            className={`rounded-md px-4 py-2 ${!voiceIntents || voiceIntents.length === 0 ? 'bg-gray-400' : 'bg-blue-500 text-white hover:bg-blue-600'}`} 
+            onClick={handleVoiceIntents}
           >Execute voice intents</button>
           <input
             type="file"
