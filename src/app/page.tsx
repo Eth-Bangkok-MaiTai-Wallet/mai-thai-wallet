@@ -16,7 +16,7 @@ import { Transaction } from '@/lib/utils';
 
 export default function Chat() {
   const { address, chainId, isConnected } = useAccount();
-  const { isLoading,messages, input, handleInputChange, handleSubmit } = useChat();
+  const { isLoading, messages, input, handleInputChange, handleSubmit } = useChat();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   const [files, setFiles] = useState<FileList | undefined>(undefined);
@@ -106,6 +106,7 @@ export default function Chat() {
               content: JSON.stringify({ userAddress: address, chainId: chainId }),
               id: crypto.randomUUID(),
             });
+            
             handleSubmit(event, {
               experimental_attachments: files,
             });

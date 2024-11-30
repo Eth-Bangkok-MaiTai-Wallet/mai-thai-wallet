@@ -6,7 +6,7 @@ interface Message {
     content: string
 }
 
-export function groupSegmentsIntoIntents(segments: Segment[], timeWindow: number = 5): Message[] {
+function groupSegmentsIntoIntents(segments: Segment[], timeWindow: number = 5): Message[] {
     const sentences: Message[] = [];
     let currentSentence: string[] = [];
     let lastStartTime: number = -Infinity;

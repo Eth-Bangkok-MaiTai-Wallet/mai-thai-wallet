@@ -11,7 +11,7 @@
       "triggers_on": "transcript_processed",
       "webhook_url": "https://mai-thai-wallet.vercel.app/api/transcript",
       "setup_completed_url": null,
-      "setup_instructions_file_path": "/README.md"
+      "setup_instructions_file_path": "./README.md"
     },
     "deleted": false
   }
