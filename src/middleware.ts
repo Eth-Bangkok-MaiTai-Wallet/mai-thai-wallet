@@ -9,6 +9,7 @@ export function middleware(request: NextRequest) {
   console.log('Middleware executed');
 
   const apiKey = request.headers.get('x-api-key');
+  console.log("API Key: ", apiKey)
 
   if (apiKey !== process.env.MAITHAI_API_KEY) {
     console.log('Unauthorized request');

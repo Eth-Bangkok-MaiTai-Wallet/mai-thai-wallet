@@ -13,14 +13,16 @@ import Image from 'next/image';
 import TransactionWrapper from '@/components/TransactionWrapper';
 import { BASE_CHAIN_ID } from '@/constants';
 import { Transaction } from '@/lib/utils';
+import { CoreMessage } from 'ai';
+import { Message } from './api/(get_endpoints)/get_transcript/route';
 
 export default function Chat() {
   const { address, chainId, isConnected } = useAccount();
   const { isLoading, messages, input, handleInputChange, handleSubmit } = useChat();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-
   const [files, setFiles] = useState<FileList | undefined>(undefined);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [voiceIntents, setVoiceIntents] = useState<Message[]>([]);
   
 
   useEffect(() => {
@@ -40,6 +42,36 @@ export default function Chat() {
 
     fetchTransaction();
   }, [messages]);
+
+  useEffect(() => {
+    const fetchVoiceIntents = async () => {
+      try {
+        console.log("Inside fetch voice intents...")
+        const response = await fetch('/api/get_transcript', {
+          headers: {
+            'x-api-key': process.env.NEXT_PUBLIC_MAITHAI_API_KEY || '',
+          }
+        });
+        console.log("Response: ", response)
+        const voiceIntents = await response.json();
+        console.log("Voice intents: ", voiceIntents)
+
+        if(voiceIntents){
+          setVoiceIntents(voiceIntents)
+        }
+      } catch (error) {
+        console.error("Error fetching transaction:", error);
+      }
+    };
+  
+    fetchVoiceIntents(); // Initial fetch
+    const intervalId = setInterval(fetchVoiceIntents, 5000); // Fetch every 5 seconds
+  
+    return () => clearInterval(intervalId); // Cleanup on unmount
+  }, []);
+
+
+
 
   // useEffect(() => {
   //   console.log("TransactionObject in state: ", transactions)
@@ -106,7 +138,7 @@ export default function Chat() {
               content: JSON.stringify({ userAddress: address, chainId: chainId }),
               id: crypto.randomUUID(),
             });
-            
+
             handleSubmit(event, {
               experimental_attachments: files,
             });
@@ -124,6 +156,26 @@ export default function Chat() {
             placeholder="Say something..."
             onChange={handleInputChange}
           />
+          <button 
+            disabled={!voiceIntents} 
+            className="bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600" 
+            onClick={event => {
+              for (const intent of voiceIntents) {
+                messages.push({role: intent.role as "system" | "user" | "assistant", content: intent.content, id: crypto.randomUUID()});
+              }
+  
+              handleSubmit(event, {
+                experimental_attachments: files,
+              });
+
+              setFiles(undefined);
+
+              if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+              }
+
+            }}
+          >Execute voice intents</button>
           <input
             type="file"
             className="hidden"

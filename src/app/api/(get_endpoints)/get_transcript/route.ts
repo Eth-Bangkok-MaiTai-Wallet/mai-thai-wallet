@@ -1,7 +1,7 @@
 import { Segment } from "@/lib/utils";
 import { kv } from "@vercel/kv";
 
-interface Message {
+export interface Message {
     role: string, 
     content: string
 }
