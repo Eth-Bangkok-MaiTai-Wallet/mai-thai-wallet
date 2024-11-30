@@ -1,9 +1,9 @@
 import { openai } from '@ai-sdk/openai';
 import { generateText, tool } from 'ai';
-import {getErc20TransferObject, getEthTransferObject} from '@/lib/tools/transactionObject';
+import { getEthTransferObject } from '@/lib/tools/transactionObject';
 import { z } from 'zod';
 import { lookupENS } from '@/lib/tools/ensLookup';
-import { getAddressForSymbol, getDecimalsForAddress, getTokenBalances } from '@/lib/tools/tokenBalance';
+import { getAddressForSymbol } from '@/lib/tools/tokenBalance';
 
 export async function POST(req: Request) {
     const { messages } = await req.json();
