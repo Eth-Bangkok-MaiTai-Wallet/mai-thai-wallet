@@ -1,4 +1,5 @@
 import { Hex } from "viem";
+import { extractJSONFromStream } from "./utils";
 interface TokenBalance {
   token: {
     address: string;
@@ -84,6 +85,36 @@ export async function getAddressForSymbol(symbol: string, chain: string): Promis
     }
 
     return address;
+
+  } catch (error) {
+    console.error('Error fetching token balances:', error);
+    throw error;
+  }
+}
+
+export async function getDecimalsForAddress(address: string, chain: string): Promise<string> {
+
+  console.log('Running getTokenBalances tool with address:', address, 'and chain:', chain);
+  try {
+    const response = await fetch(
+      `https://${chain}.blockscout.com/api?module=token&action=getToken&contractaddress=${address}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    console.log("Response: ", response)
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const body = await extractJSONFromStream(response.body);
+    console.log("Body: ", body)
+    // console.log("Decimals: ", data.decimals)
+    return "6"
 
   } catch (error) {
     console.error('Error fetching token balances:', error);

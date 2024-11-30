@@ -89,7 +89,7 @@ export async function getErc20TransferObject(token: string, receiver: string, am
       data: encodeFunctionData({
         abi: usdc_base_abi,
         functionName: 'transfer',
-        args: [receiver, amount]
+        args: [receiver, parseUnits(amount, decimals)]
       }),
       value: '0'
     }
