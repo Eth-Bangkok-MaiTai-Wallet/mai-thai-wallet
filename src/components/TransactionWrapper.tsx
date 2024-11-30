@@ -13,7 +13,7 @@ import type {
   TransactionResponse,
 } from '@coinbase/onchainkit/transaction';
 // import { encodeFunctionData, parseUnits } from 'viem';
-import { Transaction as BlockchainTransaction } from '@/lib/utils';
+import { Transaction as BlockchainTransaction } from '@/lib/tools/utils';
 
 export default function TransactionWrapper({ 
   onStatus, 
@@ -76,7 +76,7 @@ export default function TransactionWrapper({
   };
 
   return (
-    <div className="flex w-[450px]">
+    <div className="flex w-[200px]">
       <Transaction
         // contracts={contracts}
         calls={calls}
@@ -86,7 +86,7 @@ export default function TransactionWrapper({
         onSuccess={handleSuccess}
         onStatus={(lifecycleStatus: LifecycleStatus) => onStatus(lifecycleStatus.statusName)}
       >
-        <TransactionButton disabled={disabled} className="mt-0 mr-auto ml-auto w-[450px] max-w-full text-[white]" />
+        <TransactionButton disabled={disabled} className="mt-0 mr-auto ml-auto w-[200px] max-w-full text-[white]" />
         <TransactionStatus>
           <TransactionStatusLabel />
           <TransactionStatusAction />

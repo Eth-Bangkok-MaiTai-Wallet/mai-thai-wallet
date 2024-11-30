@@ -13,6 +13,7 @@ import TransactionWrapper from '@/components/TransactionWrapper';
 import { BASE_CHAIN_ID } from '@/constants';
 import { Transaction } from '@/lib/utils';
 import { Message } from './api/(get_endpoints)/get_transcript/route';
+import { border, cn, pressable, text } from '@coinbase/onchainkit/theme';
 
 export default function Chat() {
   const { address, chainId, isConnected } = useAccount();
@@ -155,11 +156,11 @@ export default function Chat() {
             placeholder="Say something..."
             onChange={handleInputChange}
           />
-          <button 
+          {/* <button 
             disabled={!voiceIntents || voiceIntents.length === 0} 
             className={`rounded-md px-4 py-2 ${!voiceIntents || voiceIntents.length === 0 ? 'bg-gray-400' : 'bg-blue-500 text-white hover:bg-blue-600'}`} 
             onClick={handleVoiceIntents}
-          >Execute voice intents</button>
+          >Execute voice intents</button> */}
           <input
             type="file"
             className="hidden"
@@ -172,13 +173,28 @@ export default function Chat() {
             ref={fileInputRef}
           />
         </form>
-          <div className="w-full max-w-md mx-auto">
+          <div className="w-full max-w-md mx-auto flex flex-row">
             <TransactionWrapper
               onStatus={() => {}}
               transactions={transactions}
               chainId={BASE_CHAIN_ID}
               disabled={!isConnected || !transactions || transactions.length === 0}
             />
+            <button 
+              className={cn(
+                pressable.primary,
+                border.radius,
+                'w-full rounded-xl',
+                'px-4 py-3 font-medium text-base text-white leading-6',
+                (!voiceIntents || voiceIntents.length === 0) && pressable.disabled,
+                text.headline,
+                'mt-0 ml-3 mr-auto',
+              )}
+              disabled={!voiceIntents || voiceIntents.length === 0} 
+              // className={`rounded-md px-4 py-3 w-full mt-0 ml-3 mr-auto ${!voiceIntents || voiceIntents.length === 0 ? 'bg-gray-300' : 'bg-blue-300 text-white hover:bg-blue-600'} ${!voiceIntents || voiceIntents.length && pressable.disabled}`} 
+              style={{ width: '300px', height: '48px' }} 
+              onClick={handleVoiceIntents}
+            >Execute voice intents</button>
           </div>
       </section>
     </div>
