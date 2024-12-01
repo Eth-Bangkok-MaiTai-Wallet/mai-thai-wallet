@@ -16,9 +16,18 @@ export async function getEthBalance(address: string, chain: string): Promise<Eth
   
   try {
     const chainConfig = {
-      eth: mainnet,
-      base: base, 
-      sepolia: sepolia
+      eth: {
+        network: mainnet,
+        alchemyUrl: `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`
+      },
+      base: {
+        network: base,
+        alchemyUrl: `https://base-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`
+      },
+      sepolia: {
+        network: sepolia,
+        alchemyUrl: `https://eth-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`
+      }
     }[chain];
 
     if (!chainConfig) {
@@ -26,8 +35,8 @@ export async function getEthBalance(address: string, chain: string): Promise<Eth
     }
 
     const client = createPublicClient({
-      chain: chainConfig,
-      transport: http(`https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`)
+      chain: chainConfig.network,
+      transport: http(chainConfig.alchemyUrl)
     });
 
     const balanceWei = await client.getBalance({ address: address as `0x${string}` });
