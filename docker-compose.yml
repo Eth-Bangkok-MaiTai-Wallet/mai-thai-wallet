@@ -1,6 +1,7 @@
 version: '3'
 services:
   app:
+    image: mai-thai-wallet:v0.01
     build: .
     ports:
       - "3000:3000"
@@ -10,7 +11,6 @@ services:
       - AKASH_API_KEY
       - NEXT_PUBLIC_WC_PROJECT_ID
       - CHAIN_ID
-      - WALLET_ADDRESS
       - KV_REST_API_URL
       - KV_REST_API_TOKEN
       - ALCHEMY_API_KEY
