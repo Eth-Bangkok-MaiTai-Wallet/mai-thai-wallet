@@ -22,46 +22,45 @@ export default function Chat() {
   const [files, setFiles] = useState<FileList | undefined>(undefined);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [voiceIntents, setVoiceIntents] = useState<Message[]>([]);
-  
 
-  useEffect(() => {
-    const fetchTransaction = async () => {
-      try {
-        const response = await fetch('/api/retrieve_transaction');
-        const data = await response.json();
+  const fetchTransaction = async () => {
+    try {
+      const response = await fetch('/api/retrieve_transaction');
+      const data = await response.json();
 
-        console.log("Stored transaction: ", data.transactions);
-        if(data.transactions){
-          setTransactions(data.transactions);
-        }
-      } catch (error) {
-        console.error("Error fetching transaction:", error);
+      console.log("Stored transaction: ", data.transactions);
+      if(data.transactions){
+        setTransactions(data.transactions);
       }
-    };
-
+    } catch (error) {
+      console.error("Error fetching transaction:", error);
+    }
+  };
+  
+  useEffect(() => {
     fetchTransaction();
-  }, [messages]);
+  }, [isLoading]);
 
-  useEffect(() => {
-    const fetchVoiceIntents = async () => {
-      try {
-        const response = await fetch('/api/get_transcript');
-        const voiceIntents = await response.json();
-        console.log("Voice intents: ", voiceIntents)
+  // useEffect(() => {
+  //   const fetchVoiceIntents = async () => {
+  //     try {
+  //       const response = await fetch('/api/get_transcript');
+  //       const voiceIntents = await response.json();
+  //       console.log("Voice intents: ", voiceIntents)
 
-        if(voiceIntents){
-          setVoiceIntents(voiceIntents)
-        }
-      } catch (error) {
-        console.error("Error fetching transaction:", error);
-      }
-    };
+  //       if(voiceIntents){
+  //         setVoiceIntents(voiceIntents)
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching transaction:", error);
+  //     }
+  //   };
   
-    fetchVoiceIntents();
-    const intervalId = setInterval(fetchVoiceIntents, 5000);
+  //   fetchVoiceIntents();
+  //   const intervalId = setInterval(fetchVoiceIntents, 5000);
   
-    return () => clearInterval(intervalId);
-  }, []);
+  //   return () => clearInterval(intervalId);
+  // }, []);
 
   const handleVoiceIntents = async () => {
     try{

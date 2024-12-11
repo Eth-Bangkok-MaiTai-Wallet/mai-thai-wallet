@@ -29,8 +29,8 @@ export async function POST(req: Request) {
             }),
             tokenAddress: tool({
               description: 'A tool for getting token address from a symbol. Expects a token symbol as an input along with the chain name (e.g. eth, base, sepolia, etc.)',
-              parameters: z.object({ symbol: z.string(), chain: z.string() }),
-              execute: async ({ symbol, chain = 'base' }) => getAddressForSymbol(symbol, chain),
+              parameters: z.object({ symbol: z.string(), chainId: z.number() }),
+              execute: async ({ symbol, chainId }) => getAddressForSymbol(symbol, chainId),
             }),
             answer: tool({
                 description: 'A tool for providing the final answer.',

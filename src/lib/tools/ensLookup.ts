@@ -1,6 +1,6 @@
 import { normalize } from 'viem/ens'
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+import { getPublicClient } from '../client';
+
   
   /**
    * Resolves ens names via alchemy api
@@ -11,10 +11,7 @@ import { mainnet } from 'viem/chains'
 
     console.log("Looking up ENS: ", ens)
 
-    const client = createPublicClient({ 
-        chain: mainnet,
-        transport: http(`https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`),
-    })
+    const client = getPublicClient(1);
 
     console.log("Normalized ENS: ", normalize(ens))
     

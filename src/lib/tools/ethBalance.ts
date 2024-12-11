@@ -1,5 +1,5 @@
-import { createPublicClient, http, formatEther } from 'viem';
-import { mainnet, base, sepolia } from 'viem/chains';
+import { formatEther } from 'viem';
+import { getPublicClient } from '../client';
 
 interface EthBalance {
   value: string;
@@ -11,33 +11,11 @@ interface EthBalance {
  * @param chain The blockchain network to query (e.g. eth, base, sepolia)
  * @returns ETH balance
  */
-export async function getEthBalance(address: string, chain: string): Promise<EthBalance> {
-  console.log('Running getEthBalance tool with address:', address, 'and chain:', chain);
+export async function getEthBalance(address: string, chainId: number): Promise<EthBalance> {
+  console.log('Running getEthBalance tool with address:', address, 'and chain:', chainId);
   
   try {
-    const chainConfig = {
-      eth: {
-        network: mainnet,
-        alchemyUrl: `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`
-      },
-      base: {
-        network: base,
-        alchemyUrl: `https://base-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`
-      },
-      sepolia: {
-        network: sepolia,
-        alchemyUrl: `https://eth-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`
-      }
-    }[chain];
-
-    if (!chainConfig) {
-      throw new Error(`Unsupported chain: ${chain}`);
-    }
-
-    const client = createPublicClient({
-      chain: chainConfig.network,
-      transport: http(chainConfig.alchemyUrl)
-    });
+    const client = getPublicClient(chainId);
 
     const balanceWei = await client.getBalance({ address: address as `0x${string}` });
     const balanceEth = formatEther(balanceWei);

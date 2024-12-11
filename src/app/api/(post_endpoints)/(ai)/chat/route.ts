@@ -125,6 +125,8 @@ const agentRouter = async (messages: CoreMessage[], classificationResult: string
       return callAgent(messages, 'erc20_transfer');
     case 'erc20_swap':
       return callAgent(messages, 'swap');
+    case 'restake':
+      return callAgent(messages, 'restake');
     default:
       return {answer: 'I am sorry, I do not understand your request. Please provide clarification.'};
   }

@@ -97,4 +97,15 @@ export const clusters = [
     //     "I want to mint an NFT on collection 0x119Ea671030FBf79AB93b436D2E20af6ea469a19",
     //   ],
     // },
+    {
+      name: "restake" as const,
+      values: [
+        "I want to restake 100 ETH",
+        "I want to restake on eigenlayer",
+        "I want to stake on Eignelayer",
+        "Restake 1 sfrxeth",
+        "restake all my eth",
+        "restake my sfrxeth",
+      ],
+    }
   ];
