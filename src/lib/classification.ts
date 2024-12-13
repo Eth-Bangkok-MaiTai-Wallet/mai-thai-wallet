@@ -107,5 +107,12 @@ export const clusters = [
         "restake all my eth",
         "restake my sfrxeth",
       ],
+    },
+    {
+      name: "lit_action" as const,
+      values: [
+        "I want to sum numbers 13 and 28",
+        "calculate a sum of 45 and 28"
+      ],
     }
   ];

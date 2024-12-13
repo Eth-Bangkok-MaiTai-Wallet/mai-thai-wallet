@@ -3,6 +3,26 @@ import { extractJSONFromStream } from '@/lib/utils';
 // import { openai } from '@ai-sdk/openai';
 import { CoreMessage, streamText } from 'ai';
 
+import { LitNodeClient } from "@lit-protocol/lit-node-client";
+import { LIT_NETWORK, LIT_RPC } from "@lit-protocol/constants";
+import * as ethers from "ethers";
+
+// const litNodeClient = new LitNodeClient({
+//   litNetwork: LIT_NETWORK.DatilDev,
+//   debug: false
+// });
+// await litNodeClient.connect();
+
+// const _litActionCode = async () => {
+//   if (magicNumber >= 42) {
+//       LitActions.setResponse({ response:"The number is greater than or equal to 42!" });
+//   } else {
+//       LitActions.setResponse({ response: "The number is less than 42!" });
+//   }
+// }
+
+// const litActionCode = `(${_litActionCode.toString()})();`;
+
 // type CoreUserMessageWithAttachments = CoreUserMessage & {
 //   experimental_attachments?: Array<{
 //     type: string;
@@ -13,9 +33,9 @@ import { CoreMessage, streamText } from 'ai';
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
-const MODEL = registry.languageModel('akash:Meta-Llama-3-1-8B-Instruct-FP8');
+// const MODEL = registry.languageModel('akash:Meta-Llama-3-1-8B-Instruct-FP8');
+const MODEL = registry.languageModel('gaia:llama');
 const FINAL_PROMPT = 'You receive the user input and the AI agent response with a solution to the inquiry. Formulate the final response to the user based on the answer provided by the agent. Respond with the final answer only.';
-
 
 export async function POST(req: Request) {
   const { messages: textMessages } = await req.json();
@@ -127,6 +147,8 @@ const agentRouter = async (messages: CoreMessage[], classificationResult: string
       return callAgent(messages, 'swap');
     case 'restake':
       return callAgent(messages, 'restake');
+    case 'lit_action':
+      return callAgent(messages, 'lit_action')
     default:
       return {answer: 'I am sorry, I do not understand your request. Please provide clarification.'};
   }
