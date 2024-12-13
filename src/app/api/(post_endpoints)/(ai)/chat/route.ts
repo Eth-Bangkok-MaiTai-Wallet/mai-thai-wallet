@@ -3,19 +3,12 @@ import { extractJSONFromStream } from '@/lib/utils';
 // import { openai } from '@ai-sdk/openai';
 import { CoreMessage, streamText } from 'ai';
 
-// type CoreUserMessageWithAttachments = CoreUserMessage & {
-//   experimental_attachments?: Array<{
-//     type: string;
-//     image_url: string;
-//   }>;
-// };
-
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
-const MODEL = registry.languageModel('akash:Meta-Llama-3-1-8B-Instruct-FP8');
+// const MODEL = registry.languageModel('akash:Meta-Llama-3-1-8B-Instruct-FP8');
+const MODEL = registry.languageModel('gaia:llama');
 const FINAL_PROMPT = 'You receive the user input and the AI agent response with a solution to the inquiry. Formulate the final response to the user based on the answer provided by the agent. Respond with the final answer only.';
-
 
 export async function POST(req: Request) {
   const { messages: textMessages } = await req.json();
@@ -127,6 +120,8 @@ const agentRouter = async (messages: CoreMessage[], classificationResult: string
       return callAgent(messages, 'swap');
     case 'restake':
       return callAgent(messages, 'restake');
+    case 'lit_action':
+      return callAgent(messages, 'lit_action')
     case 'queue_unrestake':
       return callAgent(messages, 'queue_unrestake');
     case 'complete_unrestake':

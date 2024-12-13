@@ -132,5 +132,12 @@ export const clusters = [
         "withdraw from eigenlayer 0x2ab0929ace284e9510e8b71ac12d1943dd05146c96ae37ebec5e7b83y46teg4",
         "withdraw from restaking 0x2ab1929ace284e9510e8b71ac12d1943dd05146c96ae37ebec5e7b83ndg5464747",
       ],
+    },
+    {
+      name: "lit_action" as const,
+      values: [
+        "I want to sum numbers 13 and 28",
+        "calculate a sum of 45 and 28"
+      ]
     }
   ];
