@@ -3,33 +3,6 @@ import { extractJSONFromStream } from '@/lib/utils';
 // import { openai } from '@ai-sdk/openai';
 import { CoreMessage, streamText } from 'ai';
 
-import { LitNodeClient } from "@lit-protocol/lit-node-client";
-import { LIT_NETWORK, LIT_RPC } from "@lit-protocol/constants";
-import * as ethers from "ethers";
-
-// const litNodeClient = new LitNodeClient({
-//   litNetwork: LIT_NETWORK.DatilDev,
-//   debug: false
-// });
-// await litNodeClient.connect();
-
-// const _litActionCode = async () => {
-//   if (magicNumber >= 42) {
-//       LitActions.setResponse({ response:"The number is greater than or equal to 42!" });
-//   } else {
-//       LitActions.setResponse({ response: "The number is less than 42!" });
-//   }
-// }
-
-// const litActionCode = `(${_litActionCode.toString()})();`;
-
-// type CoreUserMessageWithAttachments = CoreUserMessage & {
-//   experimental_attachments?: Array<{
-//     type: string;
-//     image_url: string;
-//   }>;
-// };
-
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
