@@ -103,9 +103,34 @@ export const clusters = [
         "I want to restake 100 ETH",
         "I want to restake on eigenlayer",
         "I want to stake on Eignelayer",
+        "I want to deposit 10 eth into eigenlayer",
         "Restake 1 sfrxeth",
         "restake all my eth",
         "restake my sfrxeth",
+      ],
+    },
+    {
+      name: "queue_unrestake" as const,
+      values: [
+        "I want to withdraw 100 ETH from restaking",
+        "I want to unstake on eigenlayer",
+        "I want to withdraw from Eignelayer",
+        "I want to withdraw 0.1 eth from Eignelayer",
+        "I want to queue a withdrawal from eigenlayer",
+        "withdraw from eigenlayer",
+        "withdraw from restaking",
+      ],
+    },
+    {
+      name: "complete_unrestake" as const,
+      values: [
+        "I want to withdraw from eigenlayer tx hash 0x2ab0929ace284e9510e8b71ac12d1943dd05146c96ae37ebec5e7b83768a2b2e",
+        "I want to unstake on eigenlayer tx hash 0x2ab0929ace284enndde8b71ac12d1943dd05146c96ae37ebec5e7b83768a2b2e",
+        "I want to complete Eignelayer withdrawal with tx 0x....",
+        "I want to complete my eigenlayer withdrawal",
+        "complete restaking withdrawal 0x2bc0929ace284e9510e8b71ac12d1943dd05146c96ae37ebec5e7b83768a2b2e",
+        "withdraw from eigenlayer 0x2ab0929ace284e9510e8b71ac12d1943dd05146c96ae37ebec5e7b83y46teg4",
+        "withdraw from restaking 0x2ab1929ace284e9510e8b71ac12d1943dd05146c96ae37ebec5e7b83ndg5464747",
       ],
     },
     {
@@ -113,6 +138,6 @@ export const clusters = [
       values: [
         "I want to sum numbers 13 and 28",
         "calculate a sum of 45 and 28"
-      ],
+      ]
     }
   ];

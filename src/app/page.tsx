@@ -10,7 +10,7 @@ import { useAccount } from 'wagmi';
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import TransactionWrapper from '@/components/TransactionWrapper';
-import { BASE_CHAIN_ID } from '@/constants';
+import { BASE_CHAIN_ID, SEPOLIA_CHAIN_ID, HOLESKY_CHAIN_ID, MAINNET_CHAIN_ID } from '@/constants';
 import { Transaction } from '@/lib/utils';
 import { Message } from './api/(get_endpoints)/get_transcript/route';
 import { border, cn, pressable, text } from '@coinbase/onchainkit/theme';
@@ -176,7 +176,7 @@ export default function Chat() {
             <TransactionWrapper
               onStatus={() => {}}
               transactions={transactions}
-              chainId={BASE_CHAIN_ID}
+              chainId={MAINNET_CHAIN_ID}
               disabled={!isConnected || !transactions || transactions.length === 0}
             />
             <button 

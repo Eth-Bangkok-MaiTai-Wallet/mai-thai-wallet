@@ -149,6 +149,10 @@ const agentRouter = async (messages: CoreMessage[], classificationResult: string
       return callAgent(messages, 'restake');
     case 'lit_action':
       return callAgent(messages, 'lit_action')
+    case 'queue_unrestake':
+      return callAgent(messages, 'queue_unrestake');
+    case 'complete_unrestake':
+        return callAgent(messages, 'complete_unrestake');
     default:
       return {answer: 'I am sorry, I do not understand your request. Please provide clarification.'};
   }
