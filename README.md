@@ -12,7 +12,12 @@ Mai Thai Wallet aims to make blockchain interactions as seamless and enjoyable a
 
 **AI Agents:** Mai Thai leverages advanced intelligent systems to analyze and classify user intents, seamlessly converting them into precise blockchain transactions.
 
-**Smart Wallet:** Empowers users to generate a new wallet secured by a pass key, offering a robust self-custody solution. Leveraging account abstraction, it supports advanced features like transaction bundling, gas sponsorship, and seamless automation, enhancing both convenience and user control.
+**Smart Wallet:** Empowers users to generate a new wallet secured by a pass key, offering a robust self-custody solution. Leveraging account abstraction, it supports advanced features like transaction bundling, gas sponsorship, and seamless automation, enhancing both convenience and user control. Mai Thai integrates with the Coinbase Developer Platform's AgentKit to push the boundaries of what's possible, creating a groundbreaking end-user application.
+
+**EigenLayer Integration:** Mai Thai integrates with EigenLayer to enable innovative restaking mechanics. Users can easily restake their assets using autonomous agents, providing a seamless and efficient experience. This integration satisfies the EigenLayer Bounty: EigenLayer Innovation Challenge, which aims to redefine restaking with autonomous agents.
+
+**Lit Protocol Integration:** Mai Thai leverages Lit Protocol's secure infrastructure to build a practical and immediately useful agent. By integrating with Lit, Mai Thai ensures secure and efficient execution of user intents, satisfying the Lit Protocol Bounty: Most Practical Agent built with Lit.
+
 
 ## Architecture
 ![alt text](public/architecture.png)
@@ -24,6 +29,9 @@ Mai Thai Wallet aims to make blockchain interactions as seamless and enjoyable a
 - [Brian API](https://docs.brianknows.org/brian-api/apis) - executing ERC20 swap intents
 - [Akash API](https://chatapi.akash.network/) - using Llama3 deployed on Akash for generating text responses to users
 - [Blockscout API](https://docs.blockscout.com/devs/apis) - verifying token addresses, getting ABI arrays of the tokens, retrieving token lists
+- [EigenLayer](https://docs.eigenlayer.xyz/) - enabling restaking mechanics using autonomous agents
+- [Lit Protocol](https://developer.litprotocol.com/) - providing secure infrastructure for building practical agents
+
 
 ## Getting Started
 1. Setup env variables `copy .env.example .env`
