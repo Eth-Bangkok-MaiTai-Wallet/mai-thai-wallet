@@ -14,12 +14,12 @@ export async function POST(req: Request) {
         model: openai('gpt-4o-2024-08-06', { structuredOutputs: true }),
         tools: {
           tokenBalance: tool({
-            description: 'A tool for fetching token balances for an Ethereum address. Expects a valid ethereum address as input along with the chain name (e.g. eth, base, sepolia, etc.)',
+            description: 'A tool for fetching token balances for an Ethereum address. Expects a valid ethereum address as input along with the chain ID',
             parameters: z.object({ address: z.string(), chainId: z.number() }),
             execute: async ({ address, chainId = messages[0].content.chainId ? messages[0].content.chainId : 1 }) => getTokenBalances(address, chainId),
           }),
           ethBalance: tool({
-            description: 'A tool for fetching ETH balance for an Ethereum address. Expects a valid ethereum address as input along with the chain name (e.g. eth, base, sepolia, etc.)',
+            description: 'A tool for fetching ETH balance for an Ethereum address. Expects a valid ethereum address as input along with the chain ID',
             parameters: z.object({ address: z.string(), chainId: z.number() }),
             execute: async ({ address, chainId = messages[0].content.chainId ? messages[0].content.chainId : 1 }) => getEthBalance(address, chainId),
           }),

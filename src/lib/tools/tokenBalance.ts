@@ -131,7 +131,7 @@ export async function getDecimalsForAddress(address: string, chainId: number): P
 function getChainName(chainId: number): string {
   switch (chainId) {
     case 1: 
-      return 'mainnet';
+      return 'eth';
     case 11155111:
       return 'sepolia';
     case 84531:
