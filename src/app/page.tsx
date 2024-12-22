@@ -14,6 +14,7 @@ import { BASE_CHAIN_ID, SEPOLIA_CHAIN_ID, HOLESKY_CHAIN_ID, MAINNET_CHAIN_ID } f
 import { Transaction } from '@/lib/utils';
 import { Message } from './api/(get_endpoints)/get_transcript/route';
 import { border, cn, pressable, text } from '@coinbase/onchainkit/theme';
+import ViemEVMSignButton from '@/components/ViemEVMSignButton';
 
 export default function Chat() {
   const { address, chainId, isConnected } = useAccount();
@@ -194,6 +195,9 @@ export default function Chat() {
               style={{ width: '300px', height: '48px' }} 
               onClick={handleVoiceIntents}
             >Execute voice intents</button>
+          </div>
+          <div className="flex flex-col space-y-4">
+            <ViemEVMSignButton />
           </div>
       </section>
     </div>

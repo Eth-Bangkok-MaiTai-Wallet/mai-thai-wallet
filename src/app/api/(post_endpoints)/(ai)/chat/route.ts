@@ -1,7 +1,17 @@
 import { registry } from '@/lib/providerRegistry';
 import { extractJSONFromStream } from '@/lib/utils';
+import { openai } from '@ai-sdk/openai';
 // import { openai } from '@ai-sdk/openai';
 import { CoreMessage, streamText } from 'ai';
+import { getOnChainTools } from "@goat-sdk/adapter-vercel-ai";
+import { Hex } from 'viem';
+import { USDC, erc20 } from "@goat-sdk/plugin-erc20";
+import { sendETH } from "@goat-sdk/wallet-evm";
+import { smartWalletFactory } from '@/lib/smartWalletClient';
+import { CrossmintApiClient } from '@crossmint/common-sdk-base';
+import { kv } from '@vercel/kv';
+import { crossmint } from "@goat-sdk/crossmint";
+
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -9,11 +19,55 @@ export const maxDuration = 30;
 // const MODEL = registry.languageModel('akash:Meta-Llama-3-1-8B-Instruct-FP8');
 const MODEL = registry.languageModel('gaia:llama');
 const FINAL_PROMPT = 'You receive the user input and the AI agent response with a solution to the inquiry. Formulate the final response to the user based on the answer provided by the agent. Respond with the final answer only.';
+const apiClient = new CrossmintApiClient(
+  {
+      apiKey: process.env.CROSSMINT_API_KEY || '',
+  },
+  {
+      internalConfig: {
+          sdkMetadata: {
+              name: "crossmint-sdk-base",
+              version: "0.1.0",
+          },
+      },
+  },
+);
+
+
+const smartwallet = smartWalletFactory(apiClient);
+
+const { faucet } = crossmint(process.env.CROSSMINT_API_KEY || '');
+
+const smartWalletAddress = await kv.get('smartWalletAddress') as string;
 
 export async function POST(req: Request) {
   const { messages: textMessages } = await req.json();
 
   console.log("----Chat Route----:", JSON.stringify(textMessages));
+
+  const tools = await getOnChainTools({
+      wallet: await smartwallet({
+          address: smartWalletAddress,
+          signer: {
+              secretKey: process.env.AGENT_SIGNER_PRIVATE_KEY as Hex,
+          },
+          chain: "optimism-sepolia",
+          provider: process.env.ALCHEMY_API_KEY!,
+      }),
+      plugins: [sendETH(), erc20({ tokens: [USDC] }), faucet()],
+  });
+
+  const res = streamText({
+    model: openai("gpt-4o-mini"),
+    tools: tools,
+    maxSteps: 5,
+    messages: textMessages,
+    onStepFinish: (event) => {
+      console.log(event.toolResults);
+  },
+  });
+
+  return res.toDataStreamResponse();
 
   // const voiceIntents: any = await retrieveVoiceIntents()
   // const messages = [...textMessages, ...voiceIntents]
