@@ -14,6 +14,7 @@ import { BASE_CHAIN_ID, SEPOLIA_CHAIN_ID, HOLESKY_CHAIN_ID, MAINNET_CHAIN_ID } f
 import { Transaction } from '@/lib/utils';
 import { Message } from './api/(get_endpoints)/get_transcript/route';
 import { border, cn, pressable, text } from '@coinbase/onchainkit/theme';
+import EVMConnectButton from '../components/CrossMintButtons';
 
 export default function Chat() {
   const { address, chainId, isConnected } = useAccount();
@@ -179,6 +180,7 @@ export default function Chat() {
               chainId={MAINNET_CHAIN_ID}
               disabled={!isConnected || !transactions || transactions.length === 0}
             />
+            <EVMConnectButton/>
             <button 
               className={cn(
                 pressable.primary,

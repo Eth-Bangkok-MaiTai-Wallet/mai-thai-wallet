@@ -12,6 +12,8 @@
   "dependencies": {
     "@ai-sdk/openai": "^1.0.4",
     "@coinbase/onchainkit": "^0.35.6",
+    "@crossmint/client-sdk-react-ui": "^1.12.2",
+    "@crossmint/connect": "^0.11.0-alpha.1",
     "@lit-protocol/auth-helpers": "7.0.1",
     "@lit-protocol/constants": "7.0.1",
     "@lit-protocol/lit-node-client": "7.0.1",
