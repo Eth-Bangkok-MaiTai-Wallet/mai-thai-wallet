@@ -18,7 +18,7 @@ export async function POST(req: Request) {
 
     console.log(res);
 
-    await kv.set('smartWalletAddress', res.address);
+    await kv.set(adminSignerAddress, res.address);
 
     return new Response(JSON.stringify(res), { status: 201 });
     

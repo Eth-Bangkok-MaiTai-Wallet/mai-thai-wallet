@@ -1,6 +1,10 @@
-export async function GET(request: Request, { params }: { params: { smartWalletAddress: string, signerAddress: string }}) {
-    const smartWalletAddress = await params.smartWalletAddress;
-    const signerAddress = await params.signerAddress;
+export async function GET(
+    request: Request,
+    props: { params: Promise<{ smartWalletAddress: string, signerAddress: string }>}
+) {
+    const params = await props.params;
+    const smartWalletAddress = params.smartWalletAddress;
+    const signerAddress = params.signerAddress;
 
     const options = {method: 'GET', headers: {'X-API-KEY': process.env.CROSSMINT_API_KEY!}};
 
