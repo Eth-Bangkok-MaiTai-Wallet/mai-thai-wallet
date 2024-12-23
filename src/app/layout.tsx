@@ -31,6 +31,7 @@ export default async function RootLayout({
 }>) {
 
   await kv.del("transactions");
+  await kv.del("crossmintTx");
 
   return (
     <html lang="en">

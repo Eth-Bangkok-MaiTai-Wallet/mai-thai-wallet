@@ -74,13 +74,15 @@ export default function ViemEVMSignButton() {
                 method: 'GET'
             })).json();
 
-            const delegate = await (await fetch(`/api/crossmint_get_delegate?smartWalletAddress=${smartWalletAddress}&signerAddress=${agentAddress}`, {
+            console.log('Agent address:', agentAddress);
+
+            const delegate = await (await fetch(`/api/crossmint_get_delegate/${smartWalletAddress}/${agentAddress}`, {
               method: 'GET'
             })).json();
 
             console.log('delegate', delegate);
 
-            if (!delegate) {
+            if (delegate.error) {
                 console.log('Delegate not found, creating delegate');
                 const addDelegateSignerResponse = await addDelegateSigner(agentAddress, smartWalletAddress);
 
@@ -115,6 +117,8 @@ export default function ViemEVMSignButton() {
                 })).json();
 
                 console.log('KV set response:', kvSetResponse);
+            } else {
+                console.log('Delegate already exists');
             }
 
 

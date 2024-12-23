@@ -4,5 +4,8 @@ export async function GET(key: string) {
 
     const res = await kv.get(key);
 
+    console.log('Key:', key);
+    console.log('Value:', res);
+
     return new Response(JSON.stringify({ data: res }), { status: 200 });
 }
