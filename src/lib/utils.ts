@@ -1,7 +1,8 @@
 import { Hex } from "viem";
-import { smartWalletFactory } from '@/lib/smartWalletClient';
+import { SmartWalletClient, smartWalletFactory } from '@/lib/smartWalletClient';
 import { CrossmintApiClient } from '@crossmint/common-sdk-base';
-import { kv } from "@vercel/kv";
+// import { kv } from "@vercel/kv";
+// import { SmartWalletClient } from "@goat-sdk/crossmint/dist/wallets/SmartWalletClient";
 
 export async function extractJSONFromStream(stream: ReadableStream | null) {
     if (!stream) {
@@ -38,30 +39,35 @@ export interface Segment {
   end: number
 }
 
-const smartWalletAddress = await kv.get('smartWalletAddress') as string;
+const smartWalletClients: Record<string, SmartWalletClient> = {};
 
-const apiClient = new CrossmintApiClient(
-  {
-      apiKey: process.env.CROSSMINT_API_KEY || '',
-  },
-  {
-      internalConfig: {
-          sdkMetadata: {
-              name: "crossmint-sdk-base",
-              version: "0.1.0",
-          },
+export async function getSmartWalletClient(smartWalletAddress: string) {
+  if (!smartWalletClients[smartWalletAddress]) {
+    const apiClient = new CrossmintApiClient(
+      {
+        apiKey: process.env.CROSSMINT_API_KEY || '',
       },
-  },
-);
+      {
+        internalConfig: {
+          sdkMetadata: {
+            name: "crossmint-sdk-base",
+            version: "0.1.0",
+          },
+        },
+      },
+    );
 
+    const smartwallet = smartWalletFactory(apiClient);
 
-const smartwallet = smartWalletFactory(apiClient);
+    smartWalletClients[smartWalletAddress] = await smartwallet({
+      address: smartWalletAddress,
+      signer: {
+        secretKey: process.env.AGENT_SIGNER_PRIVATE_KEY as Hex,
+      },
+      chain: "optimism-sepolia",
+      provider: `https://opt-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY!}`,
+    });
+  }
 
-export const smartWalletClient = await smartwallet({
-  address: smartWalletAddress,
-  signer: {
-      secretKey: process.env.AGENT_SIGNER_PRIVATE_KEY as Hex,
-  },
-  chain: "optimism-sepolia",
-  provider: `https://opt-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY!}`,
-})
+  return smartWalletClients[smartWalletAddress] as SmartWalletClient;
+}

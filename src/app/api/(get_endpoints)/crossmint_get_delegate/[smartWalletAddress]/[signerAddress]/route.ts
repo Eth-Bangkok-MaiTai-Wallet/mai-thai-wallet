@@ -12,7 +12,11 @@ export async function GET(
     console.log('Signer address:', signerAddress);
 
     const response = await fetch(`https://staging.crossmint.com/api/v1-alpha2/wallets/${smartWalletAddress}/signers/${signerAddress}`, options);
+
+    console.log('Response:', response);
     const data = await response.json();
+
+    console.log('Data:', data);
 
     return new Response(JSON.stringify(data), { 
         status: 200,

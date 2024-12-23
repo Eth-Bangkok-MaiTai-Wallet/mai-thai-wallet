@@ -9,7 +9,7 @@ export async function POST(req: Request) {
       body: `{"approvals":[{"signer":"evm-keypair:${adminSignerAddress}","signature":"${signature}"}]}`
     };
     
-    const res =  await (await fetch(`https://staging.crossmint.com/api/v1-alpha2/wallets/${smartWalletAddress}/signatures/${signatureId}/approvals`, options)).json();
+    const res = await fetch(`https://staging.crossmint.com/api/v1-alpha2/wallets/${smartWalletAddress}/signatures/${signatureId}/approvals`, options);
 
     console.log(res);
 

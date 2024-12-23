@@ -311,7 +311,7 @@ export class SmartWalletClient extends EVMSmartWalletClient {
             };
         }
 
-        kv.set("approved", "false");
+        kv.set("approved", null);
 
         console.log("----Sending batch of transactions----:", JSON.stringify(transactions));
         const transactionDatas = transactions.map((transaction) => {

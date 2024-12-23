@@ -1,7 +1,7 @@
 # Mai Thai Wallet
-“Just as the Mai Tai evokes feelings of relaxation and adventure, 
+"Just as the Mai Tai evokes feelings of relaxation and adventure, 
 your wallet can aim to make blockchain interactions feel less intimidating 
-and more inviting, especially for beginners.”
+and more inviting, especially for beginners."
 
 ## Introduction
 
@@ -12,37 +12,33 @@ Mai Thai Wallet aims to make blockchain interactions as seamless and enjoyable a
 
 **AI Agents:** Mai Thai leverages advanced intelligent systems to analyze and classify user intents, seamlessly converting them into precise blockchain transactions.
 
-**Smart Wallet:** Empowers users to generate a new wallet secured by a pass key, offering a robust self-custody solution. Leveraging account abstraction, it supports advanced features like transaction bundling, gas sponsorship, and seamless automation, enhancing both convenience and user control. Mai Thai integrates with the Coinbase Developer Platform's AgentKit to push the boundaries of what's possible, creating a groundbreaking end-user application.
+**Crossmint Wallet Integration:** Mai Thai integrates with the Crossmint Wallet, providing a secure and user-friendly self-custody solution. Users can easily create and manage their wallets within the Mai Thai interface.
+
+**Transaction Verification:** One of the standout features of Mai Thai is the transaction verification step. Before an agent executes a transaction, a popup window appears, allowing the user to review the transaction details. The user must explicitly approve the transaction by clicking the execute button, ensuring transparency and control over their funds. This concept sets Mai Thai apart from fully autonomous agents, as it keeps the user informed and in control of their transactions.
 
 **EigenLayer Integration:** Mai Thai integrates with EigenLayer to enable innovative restaking mechanics. Users can easily restake their assets using autonomous agents, providing a seamless and efficient experience. This integration satisfies the EigenLayer Bounty: EigenLayer Innovation Challenge, which aims to redefine restaking with autonomous agents.
 
 **Lit Protocol Integration:** Mai Thai leverages Lit Protocol's secure infrastructure to build a practical and immediately useful agent. By integrating with Lit, Mai Thai ensures secure and efficient execution of user intents, satisfying the Lit Protocol Bounty: Most Practical Agent built with Lit.
 
-
 ## Architecture
 ![alt text](public/architecture.png)
 
 ### Technologies
-- **[Omi](https://www.omi.me/)** - using omi device we record voice intents from users and parse them to textual format
-- [CDP Smart Wallet](https://docs.cdp.coinbase.com/) - Smart account with passkey login and account abstraction feature like transaction bundling and gas sponsoring
-- [Vercel AI SDK](https://sdk.vercel.ai/) - used to interact with different AI engines and streaming text results to the UI
-- [Brian API](https://docs.brianknows.org/brian-api/apis) - executing ERC20 swap intents
-- [Akash API](https://chatapi.akash.network/) - using Llama3 deployed on Akash for generating text responses to users
-- [Blockscout API](https://docs.blockscout.com/devs/apis) - verifying token addresses, getting ABI arrays of the tokens, retrieving token lists
-- [EigenLayer](https://docs.eigenlayer.xyz/) - enabling restaking mechanics using autonomous agents
-- [Lit Protocol](https://developer.litprotocol.com/) - providing secure infrastructure for building practical agents
-
+- **[Goat SDK](https://github.com/goatim/sdk)** - The primary AI framework used for natural language processing and intent classification.
+- **[Vercel AI SDK](https://sdk.vercel.ai/)** - Used to interact with different AI engines and stream text results to the UI.
+- **[Crossmint Wallet](https://www.crossmint.io/)** - Integrated wallet solution for secure and user-friendly self-custody.
+- **[EigenLayer](https://docs.eigenlayer.xyz/)** - Enabling restaking mechanics using autonomous agents.
+- **[Lit Protocol](https://developer.litprotocol.com/)** - Providing secure infrastructure for building practical agents.
 
 ## Getting Started
 1. Setup env variables `copy .env.example .env`
 2. Run application locally `yarn dev`
 3. Open [http://localhost:3000](http://localhost:3000) with your browser, and start interacting with the wallet 
 
-
 ## Future Work
 
 We plan to integrate more features in the future, such as: 
 
-- **Voice recognition security** - ensuring that only owner can communicate with the wallet, preventing malicious behaviour
-- **Cross-chain support** - enable cross-chain execution of user intents
-- **Mobile application** - creating mobile application or omi app extension, enhancing user experience when chatting with the wallet 
+- **Voice recognition security** - Ensuring that only the owner can communicate with the wallet, preventing malicious behavior.
+- **Cross-chain support** - Enable cross-chain execution of user intents.
+- **Mobile application** - Creating a mobile application or omi app extension, enhancing the user experience when chatting with the wallet.

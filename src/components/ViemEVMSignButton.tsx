@@ -6,7 +6,7 @@ import { optimismSepolia } from 'viem/chains';
 // import { kv } from '@vercel/kv';
 
 export default function ViemEVMSignButton() {
-    const [smartWalletAddress, setSmartWalletAddress] = useState("");
+    const [smartWalletStateAddress, setSmartWalletAddress] = useState("");
 
     const CHAIN = "optimism-sepolia";
 
@@ -68,8 +68,6 @@ export default function ViemEVMSignButton() {
                 console.log('Smart wallet address already exists:', smartWalletAddress);
             }
 
-            setSmartWalletAddress(smartWalletAddress);
-
             const agentAddress = await (await fetch('/api/get_agent_address', {
                 method: 'GET'
             })).json();
@@ -120,6 +118,18 @@ export default function ViemEVMSignButton() {
             } else {
                 console.log('Delegate already exists');
             }
+
+            const kvSetResponse =   await (await fetch('/api/kv_set', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ key: 'connectedWallet', value: smartWalletAddress })
+            })).json();
+
+            console.log('KV set response:', kvSetResponse);
+
+            setSmartWalletAddress(smartWalletAddress);
 
 
 
@@ -237,10 +247,10 @@ export default function ViemEVMSignButton() {
           (e.target as HTMLButtonElement).style.backgroundColor = '#6699CC';
         }}
       >
-        {smartWalletAddress ? (
-          smartWalletAddress.length > 20 ? 
-            `${smartWalletAddress.slice(0, 4)}...${smartWalletAddress.slice(-4)}` 
-            : smartWalletAddress
+        {smartWalletStateAddress ? (
+          smartWalletStateAddress.length > 20 ? 
+            `${smartWalletStateAddress.slice(0, 4)}...${smartWalletStateAddress.slice(-4)}` 
+            : smartWalletStateAddress
         ) : "Connect Wallet"}
       </button>
     );

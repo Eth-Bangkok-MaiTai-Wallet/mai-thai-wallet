@@ -1,5 +1,5 @@
 import { registry } from '@/lib/providerRegistry';
-import { extractJSONFromStream } from '@/lib/utils';
+import { extractJSONFromStream, getSmartWalletClient } from '@/lib/utils';
 import { openai } from '@ai-sdk/openai';
 // import { openai } from '@ai-sdk/openai';
 import { CoreMessage, streamText } from 'ai';
@@ -68,8 +68,23 @@ export async function POST(req: Request) {
     chains: {11155420: { contractAddress: '0x5fd84259d66Cd46123540766Be93DFE6D43130D7'}},
   };
 
+  const connectedWallet = await kv.get('connectedWallet') as string;
+
+  if (!connectedWallet) {
+    return streamText({
+      model: openai("gpt-4o-mini"),
+      prompt: "Respond exactly with this sentence: 'Please connect your wallet to continue.'",
+    }).toDataStreamResponse();
+  }
+
+  console.log("Connected wallet: ", connectedWallet);
+
+  const smartWalletClient = await getSmartWalletClient(connectedWallet);
+
+  console.log("Smart wallet client: ", smartWalletClient.getAddress());
+
   const tools = await getOnChainTools({
-      wallet: smartWalletClient,
+      wallet: await getSmartWalletClient(connectedWallet),
       plugins: [sendETH(), erc20({ tokens: [USDC_SEPOLIA] }), faucet()],
   });
 

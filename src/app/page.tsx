@@ -18,6 +18,7 @@ import ViemEVMSignButton from '@/components/ViemEVMSignButton';
 import { kv } from '@vercel/kv';
 import { EVMTransaction } from "@goat-sdk/wallet-evm";
 import {Popup} from '@/components/Popup'
+import { getSmartWalletClient } from '@/lib/utils';
 
 export default function Chat() {
   const { address, chainId, isConnected } = useAccount();
@@ -120,7 +121,27 @@ export default function Chat() {
           'Content-Type': 'application/json',
       },
       body: JSON.stringify({ key: "approval", value: "true" })
-    })
+    });
+
+    console.log("Approval set to true");
+
+    // const response = await fetch('/api/kv_get?key=connectedWallet');
+
+    // const kvGetResponse = await response.json();
+
+    // console.log('KV get response:', kvGetResponse);
+
+    // const walletAddress = kvGetResponse.data;
+
+    // console.log("Wallet address: ", walletAddress);
+
+    await fetch('/api/crossmint_execute', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+    });
+    
     setShowPopup(false);
   }
 
@@ -218,12 +239,12 @@ export default function Chat() {
             ref={fileInputRef}
           />
         </form>
-          <div className="w-full max-w-md mx-auto flex flex-row">
+          <div className="w-full max-w-md mx-auto flex flex-row" style={{ display: 'none' }}>
             <TransactionWrapper
               onStatus={() => {}}
               transactions={transactions}
               chainId={MAINNET_CHAIN_ID}
-              disabled={!isConnected || !transactions || transactions.length === 0}
+              disabled={true}
             />
             <button 
               className={cn(
@@ -247,7 +268,7 @@ export default function Chat() {
           <Popup 
             isOpen={showPopup} 
             onClose={() => setShowPopup(false)}
-            title="Example Popup"
+            title="Transaction Details"
             position="center"
             handleApprove={handleApprove}
           >

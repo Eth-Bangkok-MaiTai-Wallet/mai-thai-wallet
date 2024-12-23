@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { X } from 'lucide-react';
-import { kv } from '@vercel/kv';
 
 interface PopupProps {
     isOpen: boolean;
@@ -51,7 +50,7 @@ export const Popup = ({
       >
         {/* Header */}
         <div className="flex justify-between items-center p-4 border-b">
-          <h2 className="text-lg font-semibold">{title}</h2>
+          <h2 className="text-lg font-semibold text-black">{title}</h2>
           <button 
             onClick={onClose}
             className="p-1 hover:bg-gray-100 rounded-full transition-colors"
@@ -61,12 +60,30 @@ export const Popup = ({
         </div>
 
         {/* Content */}
-        <div className="p-4 overflow-y-auto">
-            Heeeey
+        <div className="p-4 overflow-y-auto text-black">
           {children}
         </div>
-        <div>
-            <button onClick={handleApprove}>Approve</button>
+        <div className="p-4">
+          <button 
+            onClick={handleApprove}
+            style={{
+              backgroundColor: '#6699CC',
+              border: 'none',
+              color: 'white',
+              padding: '10px 20px',
+              textAlign: 'center',
+              textDecoration: 'none',
+              display: 'inline-block',
+              fontSize: '16px',
+              margin: '4px 2px',
+              cursor: 'pointer',
+              borderRadius: '4px',
+              transition: 'background-color 0.3s',
+              width: '200px',
+            }}
+          >
+            Approve
+          </button>
         </div>
       </div>
     </>

@@ -32,7 +32,12 @@ export default async function RootLayout({
 
   await kv.del("transactions");
   await kv.del("crossmintTx");
-
+  await kv.del("connectedWallet");
+  await kv.del("adminSignerAddress");
+  await kv.del("smartWalletAddress");
+  await kv.del("agentAddress");
+  await kv.flushall();
+    
   return (
     <html lang="en">
       <body
