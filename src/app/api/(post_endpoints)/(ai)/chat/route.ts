@@ -42,6 +42,15 @@ const smartWalletAddress = await kv.get('smartWalletAddress') as string;
 
 console.log("Smart wallet address: ", smartWalletAddress);
 
+export const smartWalletClient = await smartwallet({
+  address: smartWalletAddress,
+  signer: {
+      secretKey: process.env.AGENT_SIGNER_PRIVATE_KEY as Hex,
+  },
+  chain: "optimism-sepolia",
+  provider: `https://opt-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY!}`,
+})
+
 export async function POST(req: Request) {
   const { messages: textMessages } = await req.json();
 
@@ -62,14 +71,7 @@ export async function POST(req: Request) {
   };
 
   const tools = await getOnChainTools({
-      wallet: await smartwallet({
-          address: smartWalletAddress,
-          signer: {
-              secretKey: process.env.AGENT_SIGNER_PRIVATE_KEY as Hex,
-          },
-          chain: "optimism-sepolia",
-          provider: `https://opt-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY!}`,
-      }),
+      wallet: smartWalletClient,
       plugins: [sendETH(), erc20({ tokens: [USDC_SEPOLIA] }), faucet()],
   });
 
