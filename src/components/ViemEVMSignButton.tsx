@@ -50,7 +50,14 @@ export default function ViemEVMSignButton() {
             console.log('Admin signer address:', adminSignerAddress);
 
             const response = await fetch(`/api/kv_get?key=${adminSignerAddress}`);
-            smartWalletAddress = (await response.json()).data;
+
+            console.log('Response:', response);
+
+            const kvGetResponse = await response.json();
+
+            console.log('KV get response:', kvGetResponse);
+
+            smartWalletAddress = kvGetResponse.data;
 
             console.log('Smart wallet address fetched from kv:', smartWalletAddress);
 
@@ -205,7 +212,7 @@ export default function ViemEVMSignButton() {
       <button 
         onClick={handleClick}
         style={{
-          backgroundColor: '#4CAF50',
+          backgroundColor: '#6699CC',
           border: 'none',
           color: 'white',
           padding: '10px 20px',
