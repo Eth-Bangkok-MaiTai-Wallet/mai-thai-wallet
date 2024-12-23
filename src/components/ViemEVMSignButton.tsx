@@ -1,10 +1,11 @@
 // import { BlockchainTypes, CrossmintEVMWalletAdapter } from "@crossmint/connect";
-import React from "react";
+import React, { useState } from "react";
 import { createWalletClient, custom } from 'viem';
 // import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
 import { optimismSepolia } from 'viem/chains';
 
 export default function ViemEVMSignButton() {
+    const [smartWalletAddress, setSmartWalletAddress] = useState("");
 
     const CHAIN = "optimism-sepolia";
 
@@ -49,6 +50,7 @@ export default function ViemEVMSignButton() {
               console.log(createWalletResponse);
               
               const smartWalletAddress = createWalletResponse.address;
+              setSmartWalletAddress(smartWalletAddress);
               
               console.log(smartWalletAddress);
 
@@ -125,10 +127,43 @@ export default function ViemEVMSignButton() {
 
               console.log('completed');
 
+              return smartWalletAddress;
+
         } catch (err) {
             console.error('Error creating session', err);
         }
-    };
+    }
     
-    return <button onClick={handleClick}>Create Session</button>;
+    return (
+      <button 
+        onClick={handleClick}
+        style={{
+          backgroundColor: '#4CAF50',
+          border: 'none',
+          color: 'white',
+          padding: '10px 20px',
+          textAlign: 'center',
+          textDecoration: 'none',
+          display: 'inline-block',
+          fontSize: '16px',
+          margin: '4px 2px',
+          cursor: 'pointer',
+          borderRadius: '4px',
+          transition: 'background-color 0.3s',
+          width: '200px',
+        }}
+        onMouseOver={(e) => {
+          (e.target as HTMLButtonElement).style.backgroundColor = '#45a049';
+        }}
+        onMouseOut={(e) => {
+          (e.target as HTMLButtonElement).style.backgroundColor = '#4CAF50';
+        }}
+      >
+        {smartWalletAddress ? (
+          smartWalletAddress.length > 20 ? 
+            `${smartWalletAddress.slice(0, 4)}...${smartWalletAddress.slice(-4)}` 
+            : smartWalletAddress
+        ) : "Connect Wallet"}
+      </button>
+    );
 }
