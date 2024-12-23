@@ -38,7 +38,9 @@ export interface Segment {
   end: number
 }
 
-const smartWalletAddress = await kv.get('smartWalletAddress') as string;
+const response = await fetch(`/api/kv_get?key=smartWalletAddress`);
+
+await kv.get('smartWalletAddress') as string;
 
 const apiClient = new CrossmintApiClient(
   {
@@ -58,7 +60,7 @@ const apiClient = new CrossmintApiClient(
 const smartwallet = smartWalletFactory(apiClient);
 
 export const smartWalletClient = await smartwallet({
-  address: smartWalletAddress,
+  address: (await response.json()).data,
   signer: {
       secretKey: process.env.AGENT_SIGNER_PRIVATE_KEY as Hex,
   },

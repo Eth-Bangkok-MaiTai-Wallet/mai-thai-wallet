@@ -11,7 +11,7 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import TransactionWrapper from '@/components/TransactionWrapper';
 import { BASE_CHAIN_ID, SEPOLIA_CHAIN_ID, HOLESKY_CHAIN_ID, MAINNET_CHAIN_ID } from '@/constants';
-import { Transaction } from '@/lib/utils';
+import { smartWalletClient, Transaction } from '@/lib/utils';
 import { Message } from './api/(get_endpoints)/get_transcript/route';
 import { border, cn, pressable, text } from '@coinbase/onchainkit/theme';
 import ViemEVMSignButton from '@/components/ViemEVMSignButton';
@@ -121,6 +121,8 @@ export default function Chat() {
       },
       body: JSON.stringify({ key: "approval", value: "true" })
     })
+    smartWalletClient.sendBatchOfTransactions(crossmintTxs);
+    setCrossmintTxs([]);
     setShowPopup(false);
   }
 
