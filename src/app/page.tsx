@@ -17,6 +17,7 @@ import { border, cn, pressable, text } from '@coinbase/onchainkit/theme';
 import ViemEVMSignButton from '@/components/ViemEVMSignButton';
 import { kv } from '@vercel/kv';
 import { EVMTransaction } from "@goat-sdk/wallet-evm";
+import {Popup} from '@/components/Popup'
 
 export default function Chat() {
   const { address, chainId, isConnected } = useAccount();
@@ -27,6 +28,7 @@ export default function Chat() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [voiceIntents, setVoiceIntents] = useState<Message[]>([]);
   const [count, setCount] = useState(0);
+  const [showPopup, setShowPopup] = useState(false);
 
   const fetchTransaction = async () => {
     try {
@@ -88,6 +90,13 @@ export default function Chat() {
 
   }, [count]);
 
+  useEffect(() => {
+    if (crossmintTxs.length != 0) {
+      setShowPopup(true);
+      console.log("crossmintTxs: ", crossmintTxs)
+    }
+  }, [count]); //
+
   const handleVoiceIntents = async () => {
     try{
       fetch('/api/clear_intents', {
@@ -102,6 +111,11 @@ export default function Chat() {
     }
 
     setVoiceIntents([]);
+  }
+
+  const handleApprove = async () => {
+    // await kv.set("approval", "true");
+    setShowPopup(false);
   }
 
   return (
@@ -224,6 +238,25 @@ export default function Chat() {
           <div className="flex flex-col space-y-4">
             <ViemEVMSignButton />
           </div>
+          <Popup 
+            isOpen={showPopup} 
+            onClose={() => setShowPopup(false)}
+            title="Example Popup"
+            position="center"
+            handleApprove={handleApprove}
+          >
+            <div>
+              {crossmintTxs.map((tx, index) => (
+                <div key={index}>
+                  <p>Transaction {index}</p>
+                  <p>to: {tx.to}</p>
+                  <p>functionName: {tx.functionName}</p>
+                  <p>args: {tx.args?.toString()}</p>
+                  <p>value: {tx.value}</p>
+                </div>
+              ))}
+            </div>  
+          </Popup>
       </section>
     </div>
   );
