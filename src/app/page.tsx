@@ -114,7 +114,13 @@ export default function Chat() {
   }
 
   const handleApprove = async () => {
-    // await kv.set("approval", "true");
+    await fetch('/api/kv_set', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ key: "approval", value: "true" })
+    })
     setShowPopup(false);
   }
 
