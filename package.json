@@ -27,6 +27,7 @@
     "dotenv": "^16.4.5",
     "encoding": "^0.1.13",
     "ethers": "v5",
+    "lucide-react": "^0.469.0",
     "mathjs": "^14.0.0",
     "modelfusion": "^0.137.0",
     "next": "15.0.3",
