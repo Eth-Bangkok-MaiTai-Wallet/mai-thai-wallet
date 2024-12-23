@@ -6,6 +6,7 @@ import { mainnet } from "viem/chains";
 import { normalize } from "viem/ens";
 import { SupportedSmartWalletChains, getViemChain } from "./chains";
 import { CrossmintWalletsAPI } from "./crossmintWalletsAPI";
+import { kv } from "@vercel/kv";
 
 export type CustodialSigner = `0x${string}`;
 
@@ -302,6 +303,14 @@ export class SmartWalletClient extends EVMSmartWalletClient {
 
     private async _sendBatchOfTransactions(transactions: EVMTransaction[]) {
 
+        if (! await kv.get("approved")) {
+            await kv.set("crossmintTx",transactions);
+            return {
+                hash: "",
+                status: "awaiting approval",
+            };
+        }
+
         console.log("----Sending batch of transactions----:", JSON.stringify(transactions));
         const transactionDatas = transactions.map((transaction) => {
             const { to: recipientAddress, abi, functionName, args, value } = transaction;
@@ -314,6 +323,18 @@ export class SmartWalletClient extends EVMSmartWalletClient {
                 value,
             });
         });
+
+        console.log("----Transaction datas----:", JSON.stringify(transactionDatas));
+
+        console.log("----Chain----:", this.#chain);
+
+        console.log("----Signer account----:", this.signerAccount?.address);
+
+        console.log("----Locator----:", this.#locator);
+
+        console.log("----Address----:", this.#address);
+
+        console.log("----Client----:", await this.#client.getWallet(this.#locator));
 
         const transactionResponse = await this.#client.createTransactionForSmartWallet(
             this.#address,

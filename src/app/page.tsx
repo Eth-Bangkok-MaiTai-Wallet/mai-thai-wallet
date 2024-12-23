@@ -15,14 +15,18 @@ import { Transaction } from '@/lib/utils';
 import { Message } from './api/(get_endpoints)/get_transcript/route';
 import { border, cn, pressable, text } from '@coinbase/onchainkit/theme';
 import ViemEVMSignButton from '@/components/ViemEVMSignButton';
+import { kv } from '@vercel/kv';
+import { EVMTransaction } from "@goat-sdk/wallet-evm";
 
 export default function Chat() {
   const { address, chainId, isConnected } = useAccount();
   const { isLoading, messages, input, append, handleInputChange, handleSubmit } = useChat();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [crossmintTxs, setCrossmintTxs] = useState<EVMTransaction[]>([]);
   const [files, setFiles] = useState<FileList | undefined>(undefined);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [voiceIntents, setVoiceIntents] = useState<Message[]>([]);
+  const [count, setCount] = useState(0);
 
   const fetchTransaction = async () => {
     try {
@@ -62,6 +66,27 @@ export default function Chat() {
   
   //   return () => clearInterval(intervalId);
   // }, []);
+
+  useEffect(() => {
+
+    const fetchCrossmintTxs = async () => { 
+      const response = await fetch('/api/retrieve_crossmint_tx');
+      const data = await response.json();
+      console.log("Crossmint transactions: ", data.transactions);
+      if(data.transactions){
+        setCrossmintTxs(data.transactions as EVMTransaction[]);
+      }
+    };
+
+    fetchCrossmintTxs();
+
+    const timer = setTimeout(() => {
+      console.log("30 seconds have passed");
+      setCount(count+1)
+    }, 30000)
+    return () => clearTimeout(timer)
+
+  }, [count]);
 
   const handleVoiceIntents = async () => {
     try{
@@ -133,11 +158,11 @@ export default function Chat() {
         <form
           className="flex items-center w-full max-w-md mx-auto mb-4 space-x-2"
           onSubmit={event => {
-            messages.push({
-              role: 'system',
-              content: JSON.stringify({ userAddress: address, chainId: chainId }),
-              id: crypto.randomUUID(),
-            });
+            // messages.push({
+            //   role: 'system',
+            //   content: JSON.stringify({ userAddress: address, chainId: chainId }),
+            //   id: crypto.randomUUID(),
+            // });
 
             handleSubmit(event, {
               experimental_attachments: files,

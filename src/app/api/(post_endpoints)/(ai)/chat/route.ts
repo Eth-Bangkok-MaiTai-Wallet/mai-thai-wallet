@@ -40,10 +40,26 @@ const { faucet } = crossmint(process.env.CROSSMINT_API_KEY || '');
 
 const smartWalletAddress = await kv.get('smartWalletAddress') as string;
 
+console.log("Smart wallet address: ", smartWalletAddress);
+
 export async function POST(req: Request) {
   const { messages: textMessages } = await req.json();
 
   console.log("----Chat Route----:", JSON.stringify(textMessages));
+
+  type Token = {
+    decimals: number;
+    symbol: string;
+    name: string;
+    chains: Record<number, { contractAddress: `0x${string}` }>;
+  };
+
+  const USDC_SEPOLIA: Token = {
+    decimals: 6,
+    symbol: 'USDC',
+    name: 'Circle USD',
+    chains: {11155420: { contractAddress: '0x5fd84259d66Cd46123540766Be93DFE6D43130D7'}},
+  };
 
   const tools = await getOnChainTools({
       wallet: await smartwallet({
@@ -52,9 +68,9 @@ export async function POST(req: Request) {
               secretKey: process.env.AGENT_SIGNER_PRIVATE_KEY as Hex,
           },
           chain: "optimism-sepolia",
-          provider: process.env.ALCHEMY_API_KEY!,
+          provider: `https://opt-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY!}`,
       }),
-      plugins: [sendETH(), erc20({ tokens: [USDC] }), faucet()],
+      plugins: [sendETH(), erc20({ tokens: [USDC_SEPOLIA] }), faucet()],
   });
 
   const res = streamText({
@@ -64,7 +80,10 @@ export async function POST(req: Request) {
     messages: textMessages,
     onStepFinish: (event) => {
       console.log(event.toolResults);
-  },
+    },
+    onChunk: (event) => {
+      console.log(event.chunk);
+    }
   });
 
   return res.toDataStreamResponse();
